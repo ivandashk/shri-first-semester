@@ -1,0 +1,172 @@
+.player {
+    display: grid;
+    grid-template-columns: 70px 70px 1fr 50px;
+    grid-template-rows: 26px 20px 26px 52px;
+    grid-template-areas: "logo name name name"
+                         "logo time time t-val"
+                         "gap  gap  gap  gap"
+                         "prev next vol  v-val";
+
+    &__logo {
+        grid-area: logo;
+        user-select: none;
+    }
+
+    &__name {
+        grid-area: name;
+        color: $color-card-text-dark;
+        font-size: $font-size-average;
+    }
+
+    &__button {
+        cursor: pointer;
+        user-select: none;
+
+        &_prev {
+            grid-area: prev;
+            background: url(./images/prev.svg) no-repeat left center;
+        }
+    
+        &_next {
+            grid-area: next;
+            background: url(./images/prev.svg) no-repeat left center;
+            transform: rotate(180deg);
+        }
+    }
+
+    &__value {
+        align-self: center;
+        justify-self: right;
+        font-size: $font-size-small;
+        color: $color-player-value;
+        user-select: none;
+
+        &_time {
+            margin-top: 7px;
+            grid-area: t-val;
+            
+        }
+
+        &_volume {
+            grid-area: v-val;
+        }
+    }
+
+    &__time {
+        grid-area: time;
+        align-self: center;
+        outline: none;
+
+        -webkit-appearance: none;
+        width: 100%;
+        background: transparent;
+
+        &::-webkit-slider-thumb {
+            margin-top: -9px;
+            -webkit-appearance: none;
+            height: 20px;
+            width: 12px;
+            border-radius: 4.5px;
+            background: $color-slider-thumb-time;
+            cursor: pointer;
+        }
+          
+        &::-moz-range-thumb {
+            height: 20px;
+            width: 9px;
+            border-radius: 4.5px;
+            background: $color-slider-thumb-time;
+            cursor: pointer;
+        }
+          
+        &::-ms-thumb {
+            margin-top: 3px;
+            height: 20px;
+            width: 9px;
+            border-radius: 4.5px;
+            background: $color-slider-thumb-time;
+            cursor: pointer;
+        }
+
+        &::-webkit-slider-runnable-track {
+            margin-top: 14px;
+            width: 100%;
+            height: 1px;
+            cursor: pointer;
+            background: $color-slider-track-time;
+        }
+          
+        &::-moz-range-track {
+            width: 100%;
+            height: 1px;
+            cursor: pointer;
+        }
+          
+        &::-ms-track {
+            margin-top: 12px;
+            width: 100%;
+            height: 0;
+            cursor: pointer;
+            background: $color-slider-track-time;
+        }
+    }
+
+    &__volume {
+        margin-left: 15px;
+        grid-area: vol;
+        align-self: center;
+        outline: none;
+
+        -webkit-appearance: none;
+        width: 100%;
+        background: transparent;
+
+        &::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 16px;
+            width: 16px;
+            border-radius: 8px;
+            background: $color-slider-thumb-volume;
+            cursor: pointer;
+            margin-top: -7px;
+        }
+          
+        &::-moz-range-thumb {
+            height: 16px;
+            width: 16px;
+            border-radius: 8px;
+            background: $color-slider-thumb-volume;
+            cursor: pointer;
+        }
+          
+        &::-ms-thumb {
+            margin-top: -1px;
+            height: 16px;
+            width: 16px;
+            border-radius: 8px;
+            background: $color-slider-thumb-volume;
+            cursor: pointer;
+        }
+
+        &::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 2px;
+            cursor: pointer;
+            background: $color-slider-track-volume;
+        }
+          
+        &::-moz-range-track {
+            width: 100%;
+            height: 2px;
+            cursor: pointer;
+            background: $color-slider-track-volume;
+        }
+          
+        &::-ms-track {
+            width: 100%;
+            height: 2px;
+            cursor: pointer;
+            background: $color-slider-track-volume;
+        }
+    }
+}

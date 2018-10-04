@@ -1,19 +1,47 @@
 .events-page
     .events-page__title Лента событий
     .events-page__ribbon
-        .card.card_l.card_with-image Content
-        .card.card_s Content
-        .card.card_s Content
-        .card.card_s Content
+        .card.card_l.card_with-image
+            .card__row
+                img(src='./images/stats.svg').card__image.card__image_normalized-icon
+                .card__title Еженедельный отчет по расходам ресурсов
+            .card__basic-info
+                div Сенсоры потребления
+                div 19:00, Сегодня
+            .card__description.card__description_l Так держать! За последнюю неделю вы потратили на 10% меньше ресурсов, чем неделей ранее.
+            .card__image-container.card__last-element
+                img(src='./images/Richdata.png').card__image.card__image_attachement
+
+        .card.card_s
+            .card__row
+                img(src='./images/key.svg').card__image
+                .card__title Дверь открыта
+            .card__basic-info Сенсор входной двери
+            .card__basic-info.card__last-element 18:50, Сегодня
+
+        .card.card_s
+            .card__row
+                img(src='./images/robot-cleaner.svg').card__image.card__image_normalized-icon
+                .card__title Уборка закончена
+            .card__basic-info Пылесос
+            .card__basic-info.card__last-element 18:45, Сегодня
+        
+        .card.card_s
+            .card__row
+                img(src='./images/router.svg').card__image
+                .card__title Новый пользователь
+            .card__basic-info Роутер
+            .card__basic-info.card__last-element 18:45, Сегодня
 
         .card.card_m
-            img(src='./images/thermal.svg').card__icon
-            .card__title Изменен климатический режим
+            .card__row
+                img(src='./images/thermal.svg').card__image
+                .card__title Изменен климатический режим
             .card__basic-info
                 div Сенсор микроклимата
                 div 18:30, Сегодня
             .card__description Установлен климатический режим «Фиджи»
-            .card__measurements
+            .card__measurements.card__last-element
                 .card__measurement
                     div Температура:&nbsp;
                     span.card__measurement-value 24 C
@@ -22,16 +50,61 @@
                     span.card__measurement-value 80%
 
         .card.card_m.card_critical
-            img(src='./images/ac-white.svg').card__icon
-            .card__title Невозможно включить кондиционер
-            .card__basic-info
+            .card__row
+                img(src='./images/ac-white.svg').card__image
+                .card__title Невозможно включить кондиционер
+            .card__basic-info.card__basic-info_critical
                 .card__device Кондиционер
                 .card__time 18:21, Сегодня
             .card__details
                 div В комнате открыто окно, закройте его и повторите попытку
                 
-        .card.card_m Content
-        .card.card_m Content
-        .card.card_s Content
-        .card.card_l.card_with-image.card_critical Content
-        .card.card_s Content
+        .card.card_m
+            .card__row
+                img(src='./images/music.svg').card__image
+                .card__title Музыка включена
+            .card__basic-info
+                div Яндекс.Станция
+                div 18:16, Сегодня
+            .card__description Сейчас проигрывается:
+            .card__last-element
+                include ../player/player.pug
+        
+        .card.card_m
+            .card__row
+                img(src='./images/fridge.svg').card__image
+                .card__title Заканчивается молоко
+            .card__basic-info
+                div Холодильник
+                div 17:23, Сегодня
+            .card__description Кажется, в холодильнике заканчивается молоко. Вы хотите добавить его в список покупок?
+            .card__last-element.card__row
+                .card__button.card__button_accent Да
+                .card__button Нет
+
+        .card.card_s
+            .card__row
+                img(src='./images/battery.svg').card__image.card__image_normalized-icon
+                .card__title Зарядка завершена
+            .card__basic-info Оконный сенсор
+            .card__basic-info.card__last-element 16:22, Сегодня
+            .card__description Ура! Устройство «Оконный сенсор» снова в строю!
+
+        .card.card_l.card_with-image.card_critical
+            .card__row
+                img(src='./images/cam-white.svg').card__image
+                .card__title Пылесос застрял
+            .card__basic-info.card__basic-info_critical
+                .card__device Сенсор движения
+                .card__time 16:20, Сегодня
+            .card__details
+                .card__description_l Робопылесос не смог сменить свое местоположение в течение последних 3 минут. Похоже, ему нужна помощь.
+                .card__image-container
+                    img(src='./images/bitmap.png').card__image.card__image_attachement
+
+        .card.card_s
+            .card__row
+                img(src='./images/kettle.svg').card__image
+                .card__title Вода вскипела
+            .card__basic-info Чайник
+            .card__basic-info.card__last-element 16:17, Сегодня
