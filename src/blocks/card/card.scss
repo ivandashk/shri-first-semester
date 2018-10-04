@@ -3,6 +3,8 @@
     background-color: $color-card-background;
     padding: 20px;
     color: $color-card-text-normal;
+    display: flex;
+    flex-direction: column;
 
     &:hover {
         background-color: $color-card-background-hover;
@@ -50,22 +52,16 @@
 
     &__basic-info {
         margin: 15px 0 20px 0;
-    };
-
-    &__device {
+        display: flex;
+        justify-content: space-between;
         font-size: $font-size-medium;
-        float: left;
-    };
-
-    &__time {
-        font-size: $font-size-medium;
-        text-align: right;
     };
 
     &__description {
         padding-top: 5px;
         font-size: $font-size-average;
         color: $color-card-text-dark;
+        margin: auto 0 0;
     };
 
     &__measurements {

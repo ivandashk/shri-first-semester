@@ -4,13 +4,15 @@
     display: grid;
     grid-area: header;
     grid-template-areas: 
-        "logo nav expander";
-    grid-template-columns: 160px 1fr 16px;
+        "logo nav";
+    grid-template-columns: 160px 1fr;
     height: 92px;
     padding-left: 40px;
-    z-index: 2;
 
     @media screen and (max-width: $screen-lg) {
+        grid-template-areas: 
+            "logo nav expander";
+        grid-template-columns: 160px 1fr 16px;
         background-color: $color-background;
         border-bottom: none;
         height: 64px;
