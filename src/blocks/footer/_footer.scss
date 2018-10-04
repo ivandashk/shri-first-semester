@@ -1,0 +1,22 @@
+.footer {
+    align-items: center;
+    border-top: 1px $color-header-border solid;
+    display: grid;
+    grid-area: footer;
+    grid-template-areas: 
+        "nav copyright";
+    grid-template-columns: 2fr 1fr;
+    padding-left: 40px;
+
+    @media screen and (max-width: $screen-lg) {
+        display: none;
+    }
+
+    &__copyright{
+        color: $color-faded-text;
+        font-size: $font-size-tiny;
+        justify-self: right;
+        letter-spacing: 0;
+        margin-right: 15px;
+    }
+}

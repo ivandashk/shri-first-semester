@@ -1,0 +1,22 @@
+.main-page {
+    background-color: $color-background;
+    display: grid;
+    grid-template-areas: 
+        "header"
+        "events-page"
+        "footer";
+    grid-template-columns: 1fr;
+    grid-template-rows: 92px 1fr 64px;
+    height: 100vh;
+    width: 100vw;
+
+    @media screen and (max-width: $screen-lg) {
+        display: grid;
+        grid-template-areas: 
+            "header"
+            "events-page"
+            "footer";
+        grid-template-columns: 1fr;
+        grid-template-rows: repeat(3, auto) 1fr 64px;
+    }
+}

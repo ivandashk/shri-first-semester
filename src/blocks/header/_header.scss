@@ -1,0 +1,50 @@
+.header {
+    align-items: center;
+    border-bottom: 1px $color-header-border solid;
+    display: grid;
+    grid-area: header;
+    grid-template-areas: 
+        "logo nav expander";
+    grid-template-columns: 160px 1fr 16px;
+    height: 92px;
+    padding-left: 40px;
+    z-index: 2;
+
+    @media screen and (max-width: $screen-lg) {
+        background-color: $color-background;
+        border-bottom: none;
+        height: 64px;
+        padding: 0 20px;
+        position: fixed;
+        width: calc(100% - 40px);
+    }
+
+    &__logo {
+        grid-area: logo;
+        margin-right: 52px;
+    }
+
+    &__nav {
+        @media screen and (max-width: $screen-lg) {
+            display: none;
+        }
+    }
+
+    &__expander {
+        background: url(./images/icon_list_m.png) no-repeat center center;
+        border: none;
+        cursor: pointer;
+        display: none;
+        height: 16px;
+        width: 16px;
+        
+        @media screen and (max-width: $screen-lg) {
+            grid-column: 3;
+            display: block;
+        }
+
+        &:focus {
+            border: none;
+        }
+    }
+}

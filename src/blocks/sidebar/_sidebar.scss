@@ -1,0 +1,21 @@
+.sidebar {
+    display: none;
+
+    @media screen and (max-width: $screen-lg) {
+        background-color: $color-background;
+        display: block;
+        opacity: 0;
+        position: fixed;
+        top: 64px;
+        transition: 1s;
+        visibility: hidden;
+        width: 100%;
+    }
+
+    &_opened {
+        border-bottom: 2px solid $color-accent-active;
+        opacity: 1;
+        visibility: visible;
+        width: 100%;
+    }
+}
