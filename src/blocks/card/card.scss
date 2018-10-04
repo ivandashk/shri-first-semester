@@ -77,7 +77,7 @@
         justify-content: space-between;
         font-size: $font-size-medium;
 
-        &_critical {
+        &_with-bottom-margin {
             margin-bottom: 20px;
         };
     };
@@ -98,14 +98,6 @@
         font-size: $font-size-medium;
         padding-top: 22px;
         color: $color-card-text-dark;
-    };
-
-    &__measurement {
-        display: flex;
-    };
-
-    &__measurement-value {
-        font-weight: bold;
     };
 
     &__details {
@@ -134,9 +126,9 @@
     &__image {
         user-select: none;
 
-        &_normalized-icon {
+        &_icon {
             // For Edge
-            width: 48px;
+            max-width: 48px;
         }
 
         &_attachement {
