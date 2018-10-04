@@ -17,7 +17,7 @@ gulp.task('html', () => {
     return gulp.src('./src/index.pug')
         .pipe(plumber())
         .pipe(pug({pretty: true}))
-        .pipe(gulp.dest('./public/'))
+        .pipe(gulp.dest('./docs/'))
         .pipe(browserSync.stream())
 })
 
@@ -28,7 +28,7 @@ gulp.task('css', () => {
         .pipe(sass({outputStyle: 'compressed'}))
         .pipe(autoprefixer())
         .pipe(sourceMaps.write('./'))
-        .pipe(gulp.dest('./public/'))
+        .pipe(gulp.dest('./docs/'))
         .pipe(browserSync.stream())
 })
 
@@ -40,7 +40,7 @@ gulp.task('js', () => {
         .pipe(babel({ presets: ['env'] }))
         .pipe(uglify())
         .pipe(sourceMaps.write('./'))
-        .pipe(gulp.dest('./public/'))
+        .pipe(gulp.dest('./docs/'))
         .pipe(browserSync.stream())
 })
 
@@ -49,14 +49,14 @@ gulp.task('images', () => {
         .pipe(imagemin([
             imagemin.optipng({optimizationLevel: 5})
         ]))
-        .pipe(gulp.dest('./public/images'))
+        .pipe(gulp.dest('./docs/images'))
 })
 
 gulp.task('build', gulp.parallel('html', 'css', 'js', 'images'))
 
 gulp.task('serve', () => {
     browserSync.init({
-        server: './public',
+        server: './docs',
         browser: 'firefox'
     });
     watch('./src/**/*.pug', gulp.series('html', reload));
