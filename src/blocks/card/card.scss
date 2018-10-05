@@ -11,6 +11,14 @@
         box-shadow: 0 2px 6px 0 $color-card-shadow-hover;
     };
 
+    &:hover .card__close {
+        display: block;
+    };
+
+    &:hover .card__expand {
+        display: block;
+    };
+
     @media screen and (max-width: $screen-xs) {
         padding: 20px 16px;
         margin-bottom: 16px;
@@ -52,6 +60,29 @@
         &:hover {
             background-color: $color-card-background-critical;
         };
+    };
+
+    &__close {
+        cursor: pointer;
+        margin-left: auto;
+        align-self: baseline;
+        display: none;
+
+        @media screen and (max-width: $screen-xs) {
+            width: 10px;
+        }
+    };
+
+    &__expand {
+        cursor: pointer;
+        margin-left: auto;
+        align-self: flex-end;
+        display: none;
+        width: 10px;
+
+        @media screen and (max-width: $screen-xs) {
+            width: 8px;
+        }
     };
 
     &__row {

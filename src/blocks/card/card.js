@@ -165,6 +165,11 @@ const appendDiv = (parent) => {
     return div;
 }
 
+const getIconThemeByEventType = (iconName, eventType) => {
+    if (!isCritical(eventType)) return iconName;
+    return `${iconName}-white`;
+}
+
 const isCritical = (type) => {
     return type === 'critical';
 }
@@ -199,16 +204,27 @@ const setCardHeader = (event, card) => {
 
     const icon = document.createElement("img");
     icon.classList.add("card__image", "card__image_icon");
-    let iconName = event.icon;
-    if (event.type === 'critical') {
-        iconName += '-white';
-    }
+    let iconName = getIconThemeByEventType(event.icon, event.type);
     icon.src = `./images/${iconName}.svg`;
     header.appendChild(icon);
 
     const title = appendDiv(header);
-    title.innerHTML = event.title;
+    title.innerHTML = trimTitle(event.title);
     title.classList.add("card__title");
+    
+    const close = document.createElement("img");
+    close.classList.add("card__close");
+    iconName = getIconThemeByEventType('cross', event.type);
+    close.src = `./images/${iconName}.svg`;
+    header.appendChild(close);
+}
+
+const trimTitle = (str) => {
+    // The ugly way
+    const allowedCharWidth = 50;
+    if (str.length < allowedCharWidth) return str;
+
+    return str.slice(0, allowedCharWidth) + '...';
 }
 
 const setBasicInfo = (event, card) => {
@@ -319,6 +335,29 @@ const markLastElementInCard = (lastChild) => {
     lastChild.classList.add("card__last-element");
 }
 
+const placeExpandButton = (card) => {
+    const expand = document.createElement("img");
+    expand.classList.add("card__expand");
+    expand.src = `./images/next.svg`;
+    
+    let expandableSibling = undefined;
+    if (card.lastElementChild.classList.contains('player') 
+        || card.lastElementChild.classList.contains('card__image-container')
+        || card.lastElementChild.classList.contains('card__measurements')) {
+        expandableSibling = card.lastElementChild.previousElementSibling;
+    } else if (card.lastElementChild.classList.contains('card__basic-info')) {
+        expandableSibling = card.lastElementChild;
+        const basicInfoInRow = appendDiv(card);
+        basicInfoInRow.appendChild(expandableSibling);
+        expandableSibling = basicInfoInRow;
+    } else {
+        expandableSibling = card.lastElementChild;
+    }
+
+    expandableSibling.classList.add("card__row");
+    expandableSibling.appendChild(expand);
+}
+
 data.events.forEach(function(event) {
     let card = createCard();
     setSize(event, card);
@@ -337,4 +376,5 @@ data.events.forEach(function(event) {
     appendMeasurements(event, card);
 
     markLastElementInCard(card.lastElementChild);
+    placeExpandButton(card);
 });

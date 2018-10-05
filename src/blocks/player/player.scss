@@ -22,6 +22,9 @@
         grid-area: name;
         color: $color-card-text-dark;
         font-size: $font-size-average;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
 
         @media screen and (max-width: $screen-xs) {
             font-size: $font-size-medium;
