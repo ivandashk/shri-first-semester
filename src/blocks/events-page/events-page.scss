@@ -4,6 +4,10 @@
     padding-bottom: 80px;
 
     @media screen and (max-width: $screen-lg) {
+        padding: 0 40px 40px;
+    }
+
+    @media screen and (max-width: $screen-xs) {
         margin-top: 67px;
         padding: 0 20px 20px;
     }
@@ -13,7 +17,7 @@
         font-weight: bold;
         margin: 33px 0;
 
-        @media screen and (max-width: $screen-lg) {
+        @media screen and (max-width: $screen-xs) {
             font-size: $font-size-big;
             margin: 0 0 20px 0;
         }
@@ -21,7 +25,20 @@
 
     &__ribbon {
         display: grid;
-        grid-template-columns: repeat(6, 154px);
+        grid-template-columns: repeat(6, 1fr);
         grid-gap: 20px;
+
+        @media screen and (max-width: $screen-lg) {
+            grid-template-columns: repeat(5, 1fr);
+        }
+
+        @media screen and (max-width: $screen-md) {
+            grid-template-columns: repeat(4, 1fr);
+        }
+
+        @media screen and (max-width: $screen-xs) {
+            display: flex;
+            flex-direction: column;
+        }
     }
 }

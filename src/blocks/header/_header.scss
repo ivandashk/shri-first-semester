@@ -8,8 +8,9 @@
     grid-template-columns: 160px 1fr;
     height: 92px;
     padding-left: 40px;
+    z-index: 99;
 
-    @media screen and (max-width: $screen-lg) {
+    @media screen and (max-width: $screen-xs) {
         grid-template-areas: 
             "logo nav expander";
         grid-template-columns: 160px 1fr 16px;
@@ -27,7 +28,7 @@
     }
 
     &__nav {
-        @media screen and (max-width: $screen-lg) {
+        @media screen and (max-width: $screen-xs) {
             display: none;
         }
     }
@@ -40,7 +41,7 @@
         height: 16px;
         width: 16px;
         
-        @media screen and (max-width: $screen-lg) {
+        @media screen and (max-width: $screen-xs) {
             grid-column: 3;
             display: block;
         }

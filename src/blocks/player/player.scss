@@ -7,6 +7,10 @@
                          "gap  gap  gap  gap"
                          "prev next vol  v-val";
 
+    @media screen and (max-width: $screen-xs) {
+        grid-template-columns: 65px 65px 1fr 45px;
+    }
+
     &__logo {
         grid-area: logo;
         user-select: none;
@@ -18,6 +22,10 @@
         grid-area: name;
         color: $color-card-text-dark;
         font-size: $font-size-average;
+
+        @media screen and (max-width: $screen-xs) {
+            font-size: $font-size-medium;
+        }
     }
 
     &__button {
