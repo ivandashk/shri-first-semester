@@ -159,6 +159,12 @@ const data = {
     ]
 }
 
+const appendDiv = (parent) => {
+    const div = document.createElement("div");
+    parent.appendChild(div);
+    return div;
+}
+
 const isCritical = (type) => {
     return type === 'critical';
 }
@@ -169,9 +175,8 @@ const hasAttachedImage = (event) => {
 
 const createCard = () => {
     const ribbon = document.getElementById("ribbon");
-    const card = document.createElement("div");
+    const card = appendDiv(ribbon);
     card.classList.add("card");
-    ribbon.appendChild(card);
     return card;
 }
 
@@ -189,9 +194,8 @@ const setType = (event, card) => {
 }
 
 const setCardHeader = (event, card) => {
-    const header = document.createElement("div");
+    const header = appendDiv(card);
     header.classList.add("card__row");
-    card.appendChild(header);
 
     const icon = document.createElement("img");
     icon.classList.add("card__image", "card__image_icon");
@@ -202,62 +206,38 @@ const setCardHeader = (event, card) => {
     icon.src = `./images/${iconName}.svg`;
     header.appendChild(icon);
 
-    const title = document.createElement("div");
+    const title = appendDiv(header);
     title.innerHTML = event.title;
     title.classList.add("card__title");
-    header.appendChild(title);
 }
 
 const setBasicInfo = (event, card) => {
-    if (event.size === 's') {
-        setColumnBasicInfo(event, card);
-    } else {
-        setRowBasicInfo(event, card);
-    }
-}
-
-const setColumnBasicInfo = (event, card) => {
-    const device = document.createElement("div");
-    device.classList.add("card__basic-info");
-    device.innerHTML = event.source;
-    card.appendChild(device);
-
-    const time = document.createElement("div");
-    time.classList.add("card__basic-info");
-    time.innerHTML = event.time;
-    card.appendChild(time);
-}
-
-const setRowBasicInfo = (event, card) => {
-    const basicInfo = document.createElement("div");
+    const basicInfo = appendDiv(card);
     basicInfo.classList.add("card__basic-info");
+    if (event.size === 's') {
+        basicInfo.classList.add("card__basic-info_s");
+    }
     if (isCritical(event.type)) {
         basicInfo.classList.add("card__basic-info_with-bottom-margin");
     }
-    card.appendChild(basicInfo);
 
-    const device = document.createElement("div");
-    device.classList.add("card__device");
+    const device = appendDiv(basicInfo);
     device.innerHTML = event.source;
-    basicInfo.appendChild(device);
 
-    const time = document.createElement("div");
-    time.classList.add("card__time");
+    const time = appendDiv(basicInfo);
     time.innerHTML = event.time;
-    basicInfo.appendChild(time);
 }
 
 const appendCriticalDetails = (card) => {
-    const details = document.createElement("div");
+    const details = appendDiv(card);
     details.classList.add("card__details");
-    card.appendChild(details);
     return details;
 }
 
 const appendDescription = (event, card) => {
     if (!event.description) return;
 
-    const description = document.createElement("div");
+    const description = appendDiv(card);
     if (event.size === 'l') {
         description.classList.add("card__description_l");
     }
@@ -265,7 +245,6 @@ const appendDescription = (event, card) => {
         description.classList.add("card__description");
     }
     description.innerHTML = event.description;
-    card.appendChild(description);
 }
 
 const appendPlayer = (event, card) => {
@@ -283,9 +262,8 @@ const appendPlayer = (event, card) => {
 const appendAttachedImage = (event, card) => {
     if (!hasAttachedImage(event)) return;
 
-    const container = document.createElement("div");
+    const container = appendDiv(card);
     container.classList.add("card__image-container");
-    card.appendChild(container);
 
     const image = document.createElement("img");
     image.classList.add("card__image", "card__image_attachement");
@@ -300,27 +278,24 @@ const appendAttachedImage = (event, card) => {
 const appendButtons = (event, card) => {
     if (!event.data || !event.data.buttons) return;
 
-    const buttonRow = document.createElement("div");
+    const buttonRow = appendDiv(card);
     buttonRow.classList.add("card__row");
-    card.appendChild(buttonRow);
 
     event.data.buttons.forEach(function(buttonText, i) {
-        const button = document.createElement("div");
+        const button = appendDiv(buttonRow);
         button.classList.add("card__button");
         if (i === 0) {
             button.classList.add("card__button_accent");
         }
         button.innerHTML = buttonText;
-        buttonRow.appendChild(button);
     });
 }
 
 const appendMeasurements = (event, card) => {
     if (!event.data || !event.data.temperature || !event.data.humidity) return;
 
-    const measurements = document.createElement("div");
+    const measurements = appendDiv(card);
     measurements.classList.add("card__measurements");
-    card.appendChild(measurements);
 
     let measurementData = [];
     if (!!event.data.temperature) {
@@ -339,9 +314,9 @@ const appendMeasurements = (event, card) => {
     });
 }
 
-const markLastElementInCard = (card) => {
-    if (card.lastElementChild.classList.length === 0) return;
-    card.lastElementChild.classList.add("card__last-element");
+const markLastElementInCard = (lastChild) => {
+    if (lastChild.classList.length === 0) return;
+    lastChild.classList.add("card__last-element");
 }
 
 data.events.forEach(function(event) {
@@ -361,5 +336,5 @@ data.events.forEach(function(event) {
     appendButtons(event, card);
     appendMeasurements(event, card);
 
-    markLastElementInCard(card);
+    markLastElementInCard(card.lastElementChild);
 });
