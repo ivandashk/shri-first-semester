@@ -1,4 +1,5 @@
 .card {
+    position: relative;
     border-radius: 20px;
     background-color: $color-card-background;
     padding: 20px;
@@ -17,6 +18,10 @@
 
     &:hover .card__expand {
         display: block;
+
+        @media screen and (max-width: $screen-xs) {
+            display: none;
+        }
     };
 
     @media screen and (max-width: $screen-xs) {
@@ -79,13 +84,20 @@
         align-self: flex-end;
         display: none;
         width: 10px;
+        max-height: 36px;
 
-        @media screen and (max-width: $screen-xs) {
-            width: 8px;
-        }
+        &_absolute {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+        };
     };
 
     &__row {
+        display: flex;
+    };
+
+    &__expander-row {
         display: flex;
     };
 

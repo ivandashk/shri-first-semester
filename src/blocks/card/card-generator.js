@@ -209,7 +209,7 @@ const setCardHeader = (event, card) => {
     header.appendChild(icon);
 
     const title = appendDiv(header);
-    title.innerHTML = trimTitle(event.title);
+    title.innerHTML = trimTitle(event.title, event.size);
     title.classList.add("card__title");
     
     const close = document.createElement("img");
@@ -219,9 +219,18 @@ const setCardHeader = (event, card) => {
     header.appendChild(close);
 }
 
-const trimTitle = (str) => {
+const trimTitle = (str, cardSize) => {
     // The ugly way
-    const allowedCharWidth = 50;
+    let allowedCharWidth = undefined;
+    switch (cardSize) {
+        case 'l':
+        case 'm':
+            allowedCharWidth = 50;
+            break;
+        case 's':
+            allowedCharWidth = 20;
+            break;
+    };
     if (str.length < allowedCharWidth) return str;
 
     return str.slice(0, allowedCharWidth) + '...';
@@ -297,7 +306,7 @@ const appendButtons = (event, card) => {
     const buttonRow = appendDiv(card);
     buttonRow.classList.add("card__row");
 
-    event.data.buttons.forEach(function(buttonText, i) {
+    event.data.buttons.forEach((buttonText, i) => {
         const button = appendDiv(buttonRow);
         button.classList.add("card__button");
         if (i === 0) {
@@ -321,7 +330,7 @@ const appendMeasurements = (event, card) => {
         measurementData.push(['humidity', 'Влажность:&nbsp;', '%']);
     }
 
-    measurementData.forEach(function(data) {
+    measurementData.forEach((data) => {
         const measurement = document.getElementById('measurement');
         measurement.content.querySelector('.measurement__text').innerHTML = data[1];
         measurement.content.querySelector('.measurement__value').innerHTML = event.data[data[0]] + data[2];
@@ -331,7 +340,7 @@ const appendMeasurements = (event, card) => {
 }
 
 const markLastElementInCard = (lastChild) => {
-    if (lastChild.classList.length === 0) return;
+    if (lastChild.classList.length === 1 && lastChild.classList.contains('card__expander-row')) return;
     lastChild.classList.add("card__last-element");
 }
 
@@ -341,40 +350,43 @@ const placeExpandButton = (card) => {
     expand.src = `./images/next.svg`;
     
     let expandableSibling = undefined;
-    if (card.lastElementChild.classList.contains('player') 
-        || card.lastElementChild.classList.contains('card__image-container')
-        || card.lastElementChild.classList.contains('card__measurements')) {
+    if (card.lastElementChild.classList.contains('card__basic-info')) {
+        expand.classList.add("card__expand_absolute");
+        expandableSibling = card;
+    } else if (card.lastElementChild.classList.contains('player') 
+    || card.lastElementChild.classList.contains('card__image-container')
+    || card.lastElementChild.classList.contains('card__measurements')) {
         expandableSibling = card.lastElementChild.previousElementSibling;
-    } else if (card.lastElementChild.classList.contains('card__basic-info')) {
-        expandableSibling = card.lastElementChild;
-        const basicInfoInRow = appendDiv(card);
-        basicInfoInRow.appendChild(expandableSibling);
-        expandableSibling = basicInfoInRow;
+        expandableSibling.classList.add("card__expander-row");
     } else {
         expandableSibling = card.lastElementChild;
+        expandableSibling.classList.add("card__expander-row");
     }
 
-    expandableSibling.classList.add("card__row");
     expandableSibling.appendChild(expand);
 }
 
-data.events.forEach(function(event) {
-    let card = createCard();
-    setSize(event, card);
-    setType(event, card);
-    setCardHeader(event, card);
-    setBasicInfo(event, card);
+const generateCards = () => {
+    data.events.forEach((event) => {
+        let card = createCard();
+        setSize(event, card);
+        setType(event, card);
+        setCardHeader(event, card);
+        setBasicInfo(event, card);
 
-    if (isCritical(event.type)) {
-        card = appendCriticalDetails(card);
-    }
+        if (isCritical(event.type)) {
+            card = appendCriticalDetails(card);
+        }
 
-    appendDescription(event, card);
-    appendPlayer(event, card);
-    appendAttachedImage(event, card);
-    appendButtons(event, card);
-    appendMeasurements(event, card);
+        appendDescription(event, card);
+        appendPlayer(event, card);
+        appendAttachedImage(event, card);
+        appendButtons(event, card);
+        appendMeasurements(event, card);
 
-    markLastElementInCard(card.lastElementChild);
-    placeExpandButton(card);
-});
+        placeExpandButton(card);
+        markLastElementInCard(card.lastElementChild);
+    });
+}
+
+generateCards();
