@@ -290,14 +290,17 @@ const appendAttachedImage = (event, card) => {
     const container = appendDiv(card);
     container.classList.add("card__image-container");
 
-    const image = document.createElement("img");
-    image.classList.add("card__image", "card__image_attachement");
-    if (event.data.type === 'graph') {
-        image.src = './images/Richdata.png';
+    if (event.icon === 'cam') {
+        const camera = appendDiv(container);
+        camera.setAttribute("id", "camera");
+        camera.setAttribute("touch-action", "none");
+        camera.classList.add("card__image_camera");
     } else {
-        image.src = './images/bitmap.png';
+        const image = document.createElement("img");
+        image.classList.add("card__image", "card__image_attachement");
+        image.src = './images/Richdata.png';
+        container.appendChild(image);
     }
-    container.appendChild(image);
 }
 
 const appendButtons = (event, card) => {
@@ -366,6 +369,18 @@ const placeExpandButton = (card) => {
     expandableSibling.appendChild(expand);
 }
 
+const appendCameraInterface = (card) => {
+    const cameraInterface = appendDiv(card);
+    cameraInterface.setAttribute("id", "camera-interface");
+    cameraInterface.classList.add("card__measurements", 'card__camera-interface');
+
+    const zoom = appendDiv(cameraInterface);
+    zoom.innerHTML = 'Приближение: 0%';
+
+    const brightness = appendDiv(cameraInterface);
+    brightness.innerHTML = 'Яркость: 100%';
+}
+
 const generateCards = () => {
     data.events.forEach((event) => {
         let card = createCard();
@@ -374,9 +389,8 @@ const generateCards = () => {
         setCardHeader(event, card);
         setBasicInfo(event, card);
 
-        if (isCritical(event.type)) {
+        if (isCritical(event.type))
             card = appendCriticalDetails(card);
-        }
 
         appendDescription(event, card);
         appendPlayer(event, card);
@@ -386,6 +400,9 @@ const generateCards = () => {
 
         placeExpandButton(card);
         markLastElementInCard(card.lastElementChild);
+
+        if (event.icon === 'cam') 
+            appendCameraInterface(card);
     });
 }
 

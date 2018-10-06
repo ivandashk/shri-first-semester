@@ -244,5 +244,28 @@
             height: 100%;
             width: 100%;
         }
+
+        &_camera {
+            background: url(./images/bitmap.png) repeat-x center center;
+            background-position-x: -100px;
+            border-radius: 20px;
+            height: 424px;
+            width: 100%;
+
+            @media screen and (max-width: $screen-xs) {
+                height: 250px;
+                background-size: 500px;
+                background-position-x: 350px;
+            }
+        }
+    }
+
+    &__camera-interface {
+        display: none;
+        touch-action: pan-y;
+        
+        &_enabled {
+            display: flex;
+        }
     }
 }
