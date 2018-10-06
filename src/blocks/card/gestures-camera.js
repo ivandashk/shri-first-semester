@@ -20,7 +20,9 @@ const setGestures = () => {
     const constants = {
         zoomSpeedModifier: 0.1,
         minimumBackgroundSize: initialBackgroundSize,
-        maximumBackgroundSize: initialBackgroundSize + 500
+        maximumBackgroundSize: initialBackgroundSize + 500,
+        zoomSensitivity: 3.5,
+        rotationSensitivity: 2.5
     };
 
     const cameraState = {
@@ -79,21 +81,23 @@ const setGestures = () => {
             Math.pow(y - fixedFinger.startY, 2));
 
         const zoomDelta = (newDistance - initialFingerDistance) * constants.zoomSpeedModifier;
-        if (Math.abs(zoomDelta) > 1) {
+        if (Math.abs(zoomDelta) > constants.zoomSensitivity) {
             pinch(zoomDelta);
-        } else {
-            if (event.isPrimary) return;
-            const newFingerAngle = Math.atan2(fixedFinger.startY - y, fixedFinger.startX - x);
-            if (!deltaFingerAngle) {
-                deltaFingerAngle = newFingerAngle
-            } else {
-                rotate(newFingerAngle - deltaFingerAngle < 0);
-            }
         }
-    }
 
-    const rotate = (isCounterClockwise) => {
-        const increment = isCounterClockwise ? -1 : 1;
+        if (event.isPrimary) return;
+        const newFingerAngle = Math.atan2(fixedFinger.startY - y, fixedFinger.startX - x);
+        if (!deltaFingerAngle) {
+            deltaFingerAngle = newFingerAngle;
+        } else {
+            if (Math.abs(zoomDelta) > constants.rotationSensitivity) return;
+            rotate(newFingerAngle - deltaFingerAngle > 0);
+            deltaFingerAngle = newFingerAngle;
+        }
+}
+
+    const rotate = (isClockwise) => {
+        const increment = isClockwise ? 1 : -1;
         cameraState.currentBrightness += increment;
         camera.style.webkitFilter = `brightness(${cameraState.currentBrightness}%)`;
         cameraInterface.lastElementChild.innerHTML = `Яркость: ${cameraState.currentBrightness}%`;
