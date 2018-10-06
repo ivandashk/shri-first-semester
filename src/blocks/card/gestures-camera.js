@@ -97,6 +97,12 @@ const setGestures = () => {
         const fixedFinger = pointerId !== currentGesture[0].pointerId 
             ? currentGesture[0] 
             : currentGesture[1];
+        const movedFinger = pointerId !== currentGesture[0].pointerId
+            ? currentGesture[1] 
+            : currentGesture[0];
+
+        movedFinger.startX = x;
+        movedFinger.startY = y;
 
         return Math.sqrt(
             Math.pow(x - fixedFinger.startX, 2) + 
@@ -119,13 +125,15 @@ const setGestures = () => {
     }
 
     const pinch = (event) => {
-        const zoomDelta = (calculateNewDistance(event) - initialFingerDistance) * constants.zoomSpeedModifier;
+        const newDistance = calculateNewDistance(event);
+        const zoomDelta = (newDistance - initialFingerDistance) * 2;
+        initialFingerDistance = newDistance;
 
         const newBackgroundSize = cameraState.currentBackgroundSize + zoomDelta;
         if (newBackgroundSize < constants.minimumBackgroundSize || newBackgroundSize > constants.maximumBackgroundSize) return;
 
-        camera.style.backgroundSize = `${cameraState.currentBackgroundSize}px`;
         cameraState.currentBackgroundSize = newBackgroundSize;
+        camera.style.backgroundSize = `${newBackgroundSize}px`;
 
         const zoomPercentValue = Math.round((newBackgroundSize - constants.minimumBackgroundSize) 
             / (constants.maximumBackgroundSize - constants.minimumBackgroundSize) * 100);
