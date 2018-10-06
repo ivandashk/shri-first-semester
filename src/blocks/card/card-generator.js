@@ -305,7 +305,9 @@ const appendAttachedImage = (event, card) => {
     } else {
         const image = document.createElement("img");
         image.classList.add("card__image", "card__image_attachement");
-        image.src = './images/Richdata.png';
+        image.src = './images/Richdata@3x.png';
+        image.srcset = './images/Richdata.png 590w, ./images/Richdata@2x.png 1080w, ./images/Richdata@3x.png 1770w';
+        image.sizes = '(max-width: 650px) 560px, (max-width: 910px) 910px, 1100px';
         container.appendChild(image);
     }
 }
