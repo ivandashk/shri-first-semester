@@ -251,6 +251,7 @@
             border-radius: 20px;
             height: 424px;
             width: 100%;
+            background-size: 830px;
 
             @media screen and (max-width: $screen-xs) {
                 height: 250px;
@@ -262,7 +263,7 @@
 
     &__camera-interface {
         display: none;
-        touch-action: pan-y;
+        touch-action: none;
         
         &_enabled {
             display: flex;
