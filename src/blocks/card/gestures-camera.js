@@ -12,6 +12,7 @@ const turnGestureInterfaceOn = () => {
 const setGestures = () => {
     let currentGesture = [];
     let initialFingerDistance = undefined;
+    let deltaFingerAngle = undefined;
 
     const cameraStyle = window.getComputedStyle(camera);
     const initialBackgroundSize = parseInt(cameraStyle.getPropertyValue('background-size').slice(0, -2));
@@ -19,12 +20,13 @@ const setGestures = () => {
     const constants = {
         zoomSpeedModifier: 0.1,
         minimumBackgroundSize: initialBackgroundSize,
-        maximumBackgroundSize: initialBackgroundSize + 500,
+        maximumBackgroundSize: initialBackgroundSize + 500
     };
 
     const cameraState = {
         currentBackgroundSize: initialBackgroundSize,
         currentPosition: 0,
+        currentBrightness: 100
     };
 
     camera.addEventListener('pointerdown', (event) => {
@@ -53,7 +55,7 @@ const setGestures = () => {
                 panX(event);
                 break;
             case 2:
-                zoom(event);
+                recognizeTwoFingerGesture(event);
                 break;
         }
     });
@@ -66,7 +68,7 @@ const setGestures = () => {
         cameraState.currentPosition = currentPosition + dx;
     }
 
-    const zoom = (event) => {
+    const recognizeTwoFingerGesture = (event) => {
         const {pointerId, x, y} = event;
         const fixedFinger = pointerId !== currentGesture[0].pointerId 
             ? currentGesture[0] 
@@ -76,9 +78,29 @@ const setGestures = () => {
             Math.pow(x - fixedFinger.startX, 2) + 
             Math.pow(y - fixedFinger.startY, 2));
 
-        const zoom = (newDistance - initialFingerDistance) * constants.zoomSpeedModifier;
-        const newBackgroundSize = cameraState.currentBackgroundSize + zoom;
+        const zoomDelta = (newDistance - initialFingerDistance) * constants.zoomSpeedModifier;
+        if (Math.abs(zoomDelta) > 1) {
+            pinch(zoomDelta);
+        } else {
+            if (event.isPrimary) return;
+            const newFingerAngle = Math.atan2(fixedFinger.startY - y, fixedFinger.startX - x);
+            if (!deltaFingerAngle) {
+                deltaFingerAngle = newFingerAngle
+            } else {
+                rotate(newFingerAngle - deltaFingerAngle < 0);
+            }
+        }
+    }
 
+    const rotate = (isCounterClockwise) => {
+        const increment = isCounterClockwise ? -1 : 1;
+        cameraState.currentBrightness += increment;
+        camera.style.webkitFilter = `brightness(${cameraState.currentBrightness}%)`;
+        cameraInterface.lastElementChild.innerHTML = `Яркость: ${cameraState.currentBrightness}%`;
+    }
+
+    const pinch = (zoomDelta) => {
+        const newBackgroundSize = cameraState.currentBackgroundSize + zoomDelta;
         if (newBackgroundSize < constants.minimumBackgroundSize || newBackgroundSize > constants.maximumBackgroundSize) return;
 
         camera.style.backgroundSize = `${cameraState.currentBackgroundSize}px`;
@@ -86,13 +108,14 @@ const setGestures = () => {
 
         const zoomPercentValue = Math.round((newBackgroundSize - constants.minimumBackgroundSize) 
             / (constants.maximumBackgroundSize - constants.minimumBackgroundSize) * 100);
-
         cameraInterface.firstElementChild.innerHTML = `Приближение: ${zoomPercentValue}%`;
     }
 
     const moveToStartPosition = () => {
         if (currentGesture.length === 0) return;
         currentGesture = [];
+        initialFingerDistance = undefined;
+        deltaFingerAngle = undefined;
     }
 
     camera.addEventListener('pointerup', moveToStartPosition);
