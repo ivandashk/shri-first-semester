@@ -1,11 +1,13 @@
 const camera = document.getElementById("camera");
 const cameraInterface = document.getElementById("camera-interface");
+const cameraProgress = document.getElementById("camera-progress");
 
 const isTouchDevice = () => {
     return "ontouchstart" in document.documentElement;
 }
 
 const turnGestureInterfaceOn = () => {
+    cameraProgress.classList.add('card__camera-interface_enabled');
     cameraInterface.classList.add('card__camera-interface_enabled');
 }
 
@@ -24,7 +26,10 @@ const setGestures = () => {
         zoomSpeedModifier: 0.1,
         minimumBackgroundSize: initialBackgroundSize,
         maximumBackgroundSize: initialBackgroundSize + 500,
-        zoomSensitivity: 1
+        zoomSensitivity: 1,
+        imageBorders: 160,
+        progressMiddleValue: 50,
+        progressSpeed: 3
     };
 
     const cameraState = {
@@ -120,8 +125,13 @@ const setGestures = () => {
         const {startX, currentPosition}  = currentGesture[0];
         const {x} = event;
         const dx = x - startX;
+
+        if (currentPosition + dx < constants.imageBorders*(-1) || currentPosition + dx > constants.imageBorders) return;
+
         camera.style.backgroundPositionX = `${currentPosition + dx}px`;
         cameraState.currentPosition = currentPosition + dx;
+
+        cameraProgress.setAttribute('value', `${constants.progressMiddleValue - cameraState.currentPosition / constants.progressSpeed}`);
     }
 
     const pinch = (event) => {

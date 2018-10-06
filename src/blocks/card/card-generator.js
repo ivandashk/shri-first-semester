@@ -295,6 +295,13 @@ const appendAttachedImage = (event, card) => {
         camera.setAttribute("id", "camera");
         camera.setAttribute("touch-action", "none");
         camera.classList.add("card__image_camera");
+
+        const progress = document.createElement("progress");
+        progress.setAttribute("id", "camera-progress");
+        progress.classList.add("card__camera-interface", "card__progress");
+        progress.setAttribute("max", "100");
+        progress.setAttribute("value", "50");
+        container.appendChild(progress);
     } else {
         const image = document.createElement("img");
         image.classList.add("card__image", "card__image_attachement");
