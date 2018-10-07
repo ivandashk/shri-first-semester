@@ -12,21 +12,19 @@ const turnGestureInterfaceOn = () => {
 }
 
 const setGestures = () => {
-    let currentGesture = [];
-    let currentGestureName = "";
-    let recognizeMoves = 0;
-
     const cameraStyle = window.getComputedStyle(camera);
     const initialBackgroundSize = parseInt(cameraStyle.getPropertyValue('background-size').slice(0, -2));
 
+    let currentGesture = [];
+    let currentGestureName = "";
     let initialFingerDistance = undefined;
     let prevFingerAtan = undefined;
+    let recognizeMoves = 0;
 
     const constants = {
-        zoomSpeedModifier: 0.1,
+        zoomSpeed: 2,
         minimumBackgroundSize: initialBackgroundSize,
         maximumBackgroundSize: initialBackgroundSize + 500,
-        zoomSensitivity: 1,
         imageBorders: 160,
         progressMiddleValue: 50,
         progressSpeed: 3
@@ -75,13 +73,14 @@ const setGestures = () => {
     const recognizeGesture = (event) => {
         const fingersCount = currentGesture.length;
         switch (fingersCount) {
-            case 0:
-                return;
             case 1:
                 panX(event);
                 break;
             case 2:
                 recognizeTwoFingerGesture(event);
+                break;
+            default:
+                console.log('Unrecognized gesture');
                 break;
         }
     }
@@ -116,6 +115,7 @@ const setGestures = () => {
 
     const panX = (event) => {
         recognizeMoves++;
+        // Some time to place second finger if intended
         if (recognizeMoves > 10) {
             currentGestureName = 'pan';
         }
@@ -136,7 +136,7 @@ const setGestures = () => {
 
     const pinch = (event) => {
         const newDistance = calculateNewDistance(event);
-        const zoomDelta = (newDistance - initialFingerDistance) * 2;
+        const zoomDelta = (newDistance - initialFingerDistance) * constants.zoomSpeed;
         initialFingerDistance = newDistance;
 
         const newBackgroundSize = cameraState.currentBackgroundSize + zoomDelta;
@@ -173,18 +173,22 @@ const setGestures = () => {
         cameraInterface.lastElementChild.innerHTML = `Яркость: ${cameraState.currentBrightness}%`;
     }
 
-    const cancelGesture = () => {
+    const cancelGesture = (event) => {
         if (currentGesture.length === 0) return;
-        currentGesture.pop();
-
-        // allow replace finger multiple times in rotation move
-        if (currentGestureName !== "rotate" || currentGesture.length === 0) {
-            currentGestureName = "";
-        }
-
+        
         initialFingerDistance = undefined;
         prevFingerAtan = undefined;
         recognizeMoves = 0;
+
+        // allow replace finger multiple times in rotation move
+        if (event.type === 'pointerup' && currentGestureName === "rotate") {
+            currentGesture.pop();
+            if (currentGesture.length === 0)
+                currentGestureName = "";
+        } else {
+            currentGesture = [];
+            currentGestureName = "";
+        }
     }
 
     camera.addEventListener('pointerup', cancelGesture);
