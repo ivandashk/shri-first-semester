@@ -4,6 +4,11 @@
     margin: 0;
     padding: 0;
 
+    &_column {
+        display: flex;
+        flex-direction: column;
+    }
+
     &__item {
         opacity: .6;
             
@@ -19,7 +24,7 @@
         &_vertical {
             position: relative;
             list-style-type: none;
-            margin: 30px 0 30px;
+            margin: 0 0 30px;
             text-align: center;
         }
 

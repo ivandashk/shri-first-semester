@@ -2,6 +2,8 @@
     .header__logo
         img(src='./images/Logo@1x.png')
     ul.header__nav.nav
-        each item in ['События', 'Сводка', 'Устройства', 'Сценарии']
+        a.nav__item.nav__item_horizontal.nav__item_big(href='./index.html') События
+        a.nav__item.nav__item_horizontal.nav__item_big(href='./video.html') Видеонаблюдение
+        each item in ['Сводка', 'Устройства', 'Сценарии']
             li.nav__item.nav__item_horizontal.nav__item_big= item
     button#toggle-sidebar.header__expander

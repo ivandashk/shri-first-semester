@@ -1,4 +1,6 @@
 #sidebar.sidebar
-    ul.nav
-        each item in ['События', 'Сводка', 'Устройства', 'Сценарии']
+    ul.nav.nav_column
+        a.nav__item.nav__item_vertical.nav__item_big(href='./index.html') События
+        a.nav__item.nav__item_vertical.nav__item_big(href='./video.html') Видеонаблюдение
+        each item in ['Сводка', 'Устройства', 'Сценарии']
             li.nav__item.nav__item_vertical.nav__item_big= item

@@ -18,9 +18,11 @@
         </ul>
         <button class="header__expander" id="toggle-sidebar"></button>
       </div>
-      <div class="events-page">
-        <div class="events-page__title">Лента событий</div>
-        <div class="events-page__ribbon" id="ribbon"></div>
+      <div class="video-page">
+        <video class="video-page__video" id="video-1" muted autoplay></video>
+        <video class="video-page__video" id="video-4" muted autoplay></video>
+        <video class="video-page__video" id="video-2" muted autoplay></video>
+        <video class="video-page__video" id="video-3" muted autoplay></video>
       </div>
       <div class="footer">
         <ul class="nav">
@@ -32,6 +34,16 @@
         <div class="footer__copyright">© 2001–2017  ООО «Яндекс»</div>
       </div>
     </div>
+    <div class="video-controls" id="video-controls">
+      <div>Яркость:</div>
+      <input class="video-controls__input" type="range">
+      <div>Контрастность:</div>
+      <input class="video-controls__input" type="range">
+      <div>Уровень звука:</div>
+      <svg width="255px" height="8px" viewBox="0 0 255 8">
+        <line id="volume" x1="0" y1="8" x2="255" y2="8" style="stroke: #DB5341; stroke-width: 8px;"></line>
+      </svg>
+    </div>
     <div class="sidebar" id="sidebar">
       <ul class="nav nav_column"><a class="nav__item nav__item_vertical nav__item_big" href="./index.html">События</a><a class="nav__item nav__item_vertical nav__item_big" href="./video.html">Видеонаблюдение</a>
         <li class="nav__item nav__item_vertical nav__item_big">Сводка</li>
@@ -39,24 +51,7 @@
         <li class="nav__item nav__item_vertical nav__item_big">Сценарии</li>
       </ul>
     </div>
-    <template id="player">
-      <div class="player"><img class="player__logo">
-        <div class="player__name"></div>
-        <input class="player__time" type="range" id="time" name="time" min="0" max="100" value="10" step="1">
-        <div class="player__value player__value_time"></div>
-        <div class="player__button player__button_prev"></div>
-        <div class="player__button player__button_next"></div>
-        <input class="player__volume" type="range" id="volume" name="volume" min="0" max="100" value="80" step="1">
-        <div class="player__value player__value_volume"></div>
-      </div>
-    </template>
-    <template id="measurement">
-      <div class="measurement">
-        <div class="measurement__text"></div><span class="measurement__value"></span>
-      </div>
-    </template>
   </body>
-  <script src="events.js" type="application/javascript"></script>
-  <script src="https://code.jquery.com/pep/0.4.3/pep.js"></script>
-  <script src="scripts.min.js" type="application/javascript"></script>
+  <script src="//cdn.jsdelivr.net/npm/hls.js@latest"></script>
+  <script src="video.min.js" type="application/javascript"></script>
 </html>

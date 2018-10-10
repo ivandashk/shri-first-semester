@@ -7,9 +7,6 @@ html
         title Яндекс Дом
         link(rel="stylesheet" href="./styles.css")
     body#body.body
-        include ./blocks/events-page/events-page.pug
-        include ./blocks/player/player.pug
-        include ./blocks/measurement/measurement.pug
-    script(src="events.js" type="application/javascript")
-    script(src="https://code.jquery.com/pep/0.4.3/pep.js")
-    script(src="scripts.min.js" type="application/javascript")
+        include ./blocks/video-page/video-page.pug
+    script(src="//cdn.jsdelivr.net/npm/hls.js@latest")
+    script(src="video.min.js" type="application/javascript")

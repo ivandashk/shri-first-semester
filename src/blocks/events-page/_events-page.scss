@@ -7,6 +7,10 @@
         padding: 0 40px 40px;
     }
 
+    @media screen and (max-width: $screen-md) {
+        margin-top: 45px;
+    }
+
     @media screen and (max-width: $screen-xs) {
         margin-top: 67px;
         padding: 0 20px 20px;
