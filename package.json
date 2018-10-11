@@ -1,6 +1,9 @@
 {
   "name": "shri-2018-2-task-2",
   "version": "1.0.0",
+  "scripts": {
+    "start": "nodemon server/server.js"
+  },
   "devDependencies": {
     "babel-core": "^6.26.3",
     "babel-loader": "^8.0.4",
