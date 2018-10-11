@@ -254,4 +254,10 @@ const generateCards = (cardsData) => {
     });
 }
 
-generateCards(data);
+const xhr = new XMLHttpRequest();
+xhr.open('POST', '/api/events', true);
+xhr.onreadystatechange = function() {
+  if (this.readyState != 4) return;
+  generateCards(JSON.parse(this.response));
+}
+xhr.send();
