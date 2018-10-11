@@ -56,3 +56,47 @@ gulp
 1. После зуммирования, сейчас паномарируется не все изображение, а только центральная его часть.
 2. Если движение "pinch" выполняется слишком медленно (расстояние между указателями не успевает превысить некоторую величину), 
 движение будет распознано как "rotate".
+
+## Задание 4. Node.js
+Для просмотра решения, необходимо переключиться на ветку 4-nodejs
+
+**Задача:** 
+Написать сервер на express который будет подниматься на 8000 порту и обрабатывать два роута: 
+1. /status — должен выдавать время, прошедшее с запуска сервера в формате hh:mm:ss 
+2. /api/events — должен отдавать содержимое файла events.json. При передаче get-параметра type включается фильтрация по типам событий. При передаче некорректного type — отдавать статус 400 "incorrect type". (/api/events?type=info:critical) 
+3. Все остальные роуты должны отдавать 
+```
+<h1>Page not found</h1>
+```
+с корректным статусом 404.
+
+**Доп. задания**  
+Перейти на POST-параметры.  
+Подключить данные к вёрстке из первого задания.  
+Сделать пагинацию событий — придумать и реализовать API, позволяющее выводить события постранично.  
+
+**Комментарии к решению.**  
+Запуск 
+```
+nodemon server\server.js
+```
+
+- Все доп. задания выполнены
+- Страница с карточками из первого задания доступна по адресу http://localhost:8000/, карточки получаются запросом на сервер.
+- Реализована обработка ошибок некорректных значений параметров
+- Пагинация реализована в виде параметра page. Размер страницы - 3 элемента, нумерация начинается с индекса 0. Таким образом, запрос /api/events?type=info&page=1 отдаст с 3го по 6й элемент типа info 
+
+API-тесты (тестировал при помощи [Insomnia](https://insomnia.rest/download/)):  
+- GET http://localhost:8000/  
+- GET http://localhost:8000/notfound  
+- GET http://localhost:8000/status  
+- POST http://localhost:8000/api/events  
+- POST http://localhost:8000/api/events?type=info  
+- POST http://localhost:8000/api/events?type=critical  
+- POST http://localhost:8000/api/events?type=info:critical  
+- POST http://localhost:8000/api/events?type=incorrect  
+- POST http://localhost:8000/api/events?page=1  
+- POST http://localhost:8000/api/events?page=1&type=info  
+- POST http://localhost:8000/api/events?page=100  
+- POST http://localhost:8000/api/events?page=10a  
+
