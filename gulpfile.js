@@ -1,13 +1,10 @@
 const gulp = require('gulp'),
     autoprefixer = require('gulp-autoprefixer'),
-    babel = require('gulp-babel'),
-    concat = require('gulp-concat'),
     imagemin = require('gulp-imagemin')
     pug = require('gulp-pug'),
     plumber = require('gulp-plumber'),
     sass = require('gulp-sass'),
     sourceMaps = require('gulp-sourcemaps'),
-    uglify = require('gulp-uglify'),
     watch = require('gulp-watch');
 
 const browserSync = require('browser-sync').create(),
@@ -33,7 +30,7 @@ gulp.task('css', () => {
     return gulp.src('./src/styles.scss')
         .pipe(plumber())
         .pipe(sourceMaps.init())
-        .pipe(sass({outputStyle: 'compressed'}))
+        .pipe(sass())
         .pipe(autoprefixer())
         .pipe(sourceMaps.write('./'))
         .pipe(gulp.dest('./docs/'))
@@ -41,26 +38,9 @@ gulp.task('css', () => {
 })
 
 gulp.task('js', () => {
-    return gulp.src(['./src/blocks/card/*.js', './src/blocks/nav/*.js', './src/blocks/sidebar/*.js'])
+    return gulp.src(['./src/blocks/card/*.js', './src/blocks/nav/*.js', './src/blocks/sidebar/*.js', './src/blocks/video-page/*.js'])
         .pipe(plumber())
-        .pipe(sourceMaps.init())
-        .pipe(concat('scripts.min.js'))
-        .pipe(babel({ presets: ['env'] }))
-        .pipe(uglify())
-        .pipe(sourceMaps.write('./'))
-        .pipe(gulp.dest('./docs/'))
-        .pipe(browserSync.stream())
-})
-
-gulp.task('js-video', () => {
-    return gulp.src(['./src/blocks/video-page/*.js', './src/blocks/sidebar/*.js'])
-        .pipe(plumber())
-        .pipe(sourceMaps.init())
-        .pipe(concat('video.min.js'))
-        .pipe(babel({ presets: ['env'] }))
-        .pipe(uglify())
-        .pipe(sourceMaps.write('./'))
-        .pipe(gulp.dest('./docs/'))
+        .pipe(gulp.dest('./docs/scripts'))
         .pipe(browserSync.stream())
 })
 
@@ -72,7 +52,7 @@ gulp.task('images', () => {
         .pipe(gulp.dest('./docs/images'))
 })
 
-gulp.task('build', gulp.parallel('html', 'html-video-page', 'css', 'js', 'js-video', 'images'))
+gulp.task('build', gulp.parallel('html', 'html-video-page', 'css', 'js', 'images'))
 
 gulp.task('serve', () => {
     browserSync.init({
@@ -82,7 +62,7 @@ gulp.task('serve', () => {
     });
     watch('./src/**/*.pug', gulp.series('html', 'html-video-page', reload));
     watch('./src/**/*.scss', {readDelay: 100}, gulp.series('css'));
-    watch('./src/**/*.js', gulp.series('js', 'js-video', reload));
+    watch('./src/**/*.js', gulp.series('js', reload));
     watch('./src/images/').on('add', gulp.series('images', reload));
 })
 
