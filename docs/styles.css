@@ -526,7 +526,8 @@ html, body {
       transition: transform .3s;
       transition: transform .3s, -webkit-transform .3s;
       -webkit-transform-origin: center center;
-              transform-origin: center center; }
+              transform-origin: center center;
+      z-index: 10; }
 
 .video-controls {
   background-color: #FFF;

@@ -7,27 +7,29 @@ function initVideo(video, url) {
             video.play();
         });
 
-        let isActive = false;
+        video.brightness = 100;
+        video.contrast = 100;
 
         video.addEventListener('click', () => {
-            if(!video.audioAnalyser) {
+            if(!video.audioData) {
+                video.audioData = {};
                 initializeAudioContext(video);
             }
             video.classList.toggle("video-page__video_opened");
-            document.getElementById('video-controls').classList.toggle("video-controls_opened");
-            if (!isActive) {
-                isActive = true;
-                video.audioAnalyser.audioCtx.resume().then(() => {
-                    updateVolumeBar(video);
+            toggleControls(video);
+            if (!activeVideo) {
+                activeVideo = video;
+                video.audioData.audioCtx.resume().then(() => {
+                    updateVolumeBar(video.audioData);
                 });
                 
                 video.muted  = false;
                 centerVideo(video);
             } else {
-                video.audioAnalyser.audioCtx.suspend();
+                video.audioData.audioCtx.suspend();
                 video.style.transform = "";
                 video.muted  = true;
-                isActive = false;
+                activeVideo = undefined;
             }
         })
     } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
@@ -38,30 +40,38 @@ function initVideo(video, url) {
     }
 }
 
-const initializeAudioContext = (video) => {
-    video.audioAnalyser = {};
-    video.audioAnalyser.audioCtx = new AudioContext();
-    const source = video.audioAnalyser.audioCtx.createMediaElementSource(video);
-    video.audioAnalyser.analyser = video.audioAnalyser.audioCtx.createAnalyser();
-    video.audioAnalyser.analyser.smoothingTimeConstant = 0.9;
-    source.connect(video.audioAnalyser.analyser);
-    video.audioAnalyser.analyser.connect(video.audioAnalyser.audioCtx.destination);
-    video.audioAnalyser.analyser.fftSize = 32;
+const toggleControls = (video) => {
+    document.getElementById('video-controls').classList.toggle("video-controls_opened");
+    if (!activeVideo) {
+        brightnessInput.value = video.brightness;
+        contrastInput.value = video.contrast;
+    }
+};
 
-    video.audioAnalyser.dataArray = new Uint8Array(video.audioAnalyser.analyser.frequencyBinCount);
-    video.audioAnalyser.analyser.getByteFrequencyData(video.audioAnalyser.dataArray);
-    video.audioAnalyser.volumePercent = 0;
+const initializeAudioContext = (video) => {
+    let audioData = video.audioData;
+    audioData.audioCtx = new AudioContext();
+    const source = audioData.audioCtx.createMediaElementSource(video);
+    audioData.analyser = audioData.audioCtx.createAnalyser();
+    audioData.analyser.smoothingTimeConstant = 0.9;
+    source.connect(audioData.analyser);
+    audioData.analyser.connect(audioData.audioCtx.destination);
+    audioData.analyser.fftSize = 32;
+
+    audioData.dataArray = new Uint8Array(audioData.analyser.frequencyBinCount);
+    audioData.analyser.getByteFrequencyData(audioData.dataArray);
+    audioData.volumePercent = 0;
 }
 
-const updateVolumeBar = (video) => {
+const updateVolumeBar = (audioData) => {
     const draw = () => {
-        if (video.audioAnalyser.audioCtx.state !== 'running') return;
+        if (audioData.audioCtx.state !== 'running') return;
 
         requestAnimationFrame(draw);
         
-        video.audioAnalyser.analyser.getByteFrequencyData(video.audioAnalyser.dataArray);
-        video.audioAnalyser.volumePercent = parseInt(Math.max.apply(null, video.audioAnalyser.dataArray) / 255 * 100);
-        document.getElementById('volume').setAttribute('x2', `${video.audioAnalyser.volumePercent}%`);
+        audioData.analyser.getByteFrequencyData(audioData.dataArray);
+        audioData.volumePercent = parseInt(Math.max.apply(null, audioData.dataArray) / 255 * 100);
+        document.getElementById('volume').setAttribute('x2', `${audioData.volumePercent}%`);
     }
 
     draw();
@@ -78,6 +88,10 @@ const centerVideo = (video) => {
     const pictureCenter = [boundingRect.x + parseFloat(transformOrigin[0]), boundingRect.y + parseFloat(transformOrigin[1])];
     const newTranslateValue = `translate(${centerX - pictureCenter[0]}px, ${centerY - pictureCenter[1]}px) scale(2.8)`;
     video.style.transform = newTranslateValue;
+}
+
+const updateFilter = (video) => {
+    video.style.filter = `brightness(${video.brightness}%) contrast(${activeVideo.contrast}%)`;
 }
 
 const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -102,3 +116,18 @@ initVideo(
     document.getElementById('video-4'),
     'http://localhost:9191/master?url=http%3A%2F%2Flocalhost%3A3102%2Fstreams%2Fhall%2Fmaster.m3u8'
 );
+
+let activeVideo = undefined;
+
+const brightnessInput = document.getElementById('brightness-input');
+const contrastInput = document.getElementById('contrast-input');
+
+brightnessInput.addEventListener('input', (e) => {
+    activeVideo.brightness = e.target.value;
+    updateFilter(activeVideo);
+})
+
+contrastInput.addEventListener('input', (e) => {
+    activeVideo.contrast = e.target.value;
+    updateFilter(activeVideo);
+})
