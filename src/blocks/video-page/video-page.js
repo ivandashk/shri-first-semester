@@ -99,16 +99,21 @@ const initializeAudioContext = (video) => {
 
 const centerVideo = (video) => {
     // Центрируем видео
-    var centerX = document.body.clientWidth / 2;
-    var centerY = document.body.clientHeight / 2 - 55;
+    const bottomOffset = 55;
+
+    const centerX = document.body.clientWidth / 2;
+    const centerY = document.body.clientHeight / 2 - bottomOffset;
 
     const videoStyle = window.getComputedStyle(video);
     const boundingRect = video.getBoundingClientRect();
     let transformOrigin = videoStyle.getPropertyValue('transform-origin').match(/\d+(.\d+)?/g);
+    
+    // Магический костыль
+    let scale = document.body.clientWidth > 910 ? 2.8 : 1.1;
 
     const pictureCenter = [boundingRect.x + parseFloat(transformOrigin[0]), boundingRect.y + parseFloat(transformOrigin[1])];
-    const newTranslateValue = `translate(${centerX - pictureCenter[0]}px, ${centerY - pictureCenter[1]}px) scale(2.8)`;
-    video.style.transform = newTranslateValue;
+    const newTransformValue = `translate(${centerX - pictureCenter[0]}px, ${centerY - pictureCenter[1]}px) scale(${scale})`;
+    video.style.transform = newTransformValue;
 }
 
 const toggleControls = (video) => {

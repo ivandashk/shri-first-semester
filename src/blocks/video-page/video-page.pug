@@ -6,12 +6,16 @@
         video#video-2.video-page__video(muted, autoplay)
         video#video-3.video-page__video(muted, autoplay)
     include ../footer/footer.pug
-#video-controls.video-controls
-    div Яркость:
-    input#brightness-input.video-controls__input(type='range' min="0" max="200" value="100")
-    div Контрастность:
-    input#contrast-input.video-controls__input(type='range' min="0" max="200" value="100")
-    div Уровень звука:
-    svg(width="255px" height="8px" viewBox="0 0 255 8")
-        line(id="volume" x1="0" y1="8" x2="255" y2="8" style="stroke: #DB5341; stroke-width: 8px;")
 include ../sidebar/sidebar.pug
+
+#video-controls.video-controls
+    .video-controls__control
+        .video-controls__label Яркость:
+        input#brightness-input.video-controls__input(type='range' min="0" max="200" value="100")
+    .video-controls__control
+        .video-controls__label Контрастность:
+        input#contrast-input.video-controls__input(type='range' min="0" max="200" value="100")
+    .video-controls__control
+        .video-controls__label Уровень звука:
+        svg(width="255px" height="8px" viewBox="0 0 255 8")
+            line(id="volume" x1="0" y1="8" x2="255" y2="8" style="stroke: #DB5341; stroke-width: 8px;")

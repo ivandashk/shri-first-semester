@@ -22,7 +22,8 @@ html, body {
       position: relative;
       list-style-type: none;
       margin: 0 0 30px;
-      text-align: center; }
+      text-align: center;
+      text-decoration: none; }
     .nav__item_big {
       color: #333;
       font-size: 16px;
@@ -510,24 +511,36 @@ html, body {
     font-weight: bold; }
 
 .video-page {
-  margin: 100px auto 60px;
+  margin-bottom: 100px;
+  align-self: center;
+  justify-self: center;
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(2, 300px);
   grid-template-rows: repeat(2, 230px);
   grid-gap: 20px;
-  align-items: center; }
+  align-items: center;
+  -webkit-transform-origin: center center;
+          transform-origin: center center; }
+  @media screen and (max-width: 910px) {
+    .video-page {
+      padding: 64px 16px 16px 16px;
+      align-self: baseline;
+      margin-bottom: 0;
+      grid-template-columns: repeat(1, 300px);
+      grid-template-rows: repeat(auto-fit, -webkit-fit-content);
+      grid-template-rows: repeat(auto-fit, fit-content); } }
   .video-page__video {
     max-width: 300px;
-    transition: -webkit-transform .3s;
-    transition: transform .3s;
-    transition: transform .3s, -webkit-transform .3s; }
+    transition: all .3s; }
     .video-page__video_opened {
-      transition: -webkit-transform .3s;
-      transition: transform .3s;
-      transition: transform .3s, -webkit-transform .3s;
-      -webkit-transform-origin: center center;
-              transform-origin: center center;
-      z-index: 10; }
+      transition: all .3s;
+      z-index: 10;
+      -webkit-transform: scale(2.8);
+              transform: scale(2.8); }
+      @media screen and (max-width: 910px) {
+        .video-page__video_opened {
+          -webkit-transform: scale(1);
+                  transform: scale(1); } }
 
 .video-controls {
   background-color: #FFF;
@@ -546,9 +559,23 @@ html, body {
   box-shadow: 0 2px 6px 0 rgba(197, 186, 186, 0.5);
   border-radius: 20px;
   z-index: 99; }
+  @media screen and (max-width: 910px) {
+    .video-controls {
+      flex-direction: column;
+      width: 100%;
+      left: 0;
+      bottom: 0;
+      border-radius: 0;
+      border-top: 3px #FFCD00 solid;
+      height: 120px; } }
   .video-controls_opened {
     opacity: 1;
     visibility: visible; }
+  .video-controls__control {
+    display: flex;
+    flex-direction: row; }
+  .video-controls__label {
+    margin-right: 20px; }
   .video-controls__progress {
     width: 200px; }
   .video-controls__input {
@@ -558,6 +585,9 @@ html, body {
     width: 100%;
     background: transparent;
     margin-top: 0; }
+    @media screen and (max-width: 910px) {
+      .video-controls__input {
+        max-width: 50%; } }
     .video-controls__input::-webkit-slider-thumb {
       -webkit-appearance: none;
       height: 16px;
