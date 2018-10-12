@@ -531,9 +531,13 @@ html, body {
       grid-template-rows: repeat(auto-fit, fit-content); } }
   .video-page__video {
     max-width: 300px;
-    transition: all .3s; }
+    transition: -webkit-transform .3s;
+    transition: transform .3s;
+    transition: transform .3s, -webkit-transform .3s; }
     .video-page__video_opened {
-      transition: all .3s;
+      transition: -webkit-transform .3s;
+      transition: transform .3s;
+      transition: transform .3s, -webkit-transform .3s;
       z-index: 10;
       -webkit-transform: scale(2.8);
               transform: scale(2.8); }
@@ -573,7 +577,13 @@ html, body {
     visibility: visible; }
   .video-controls__control {
     display: flex;
-    flex-direction: row; }
+    flex-direction: column;
+    height: 40px;
+    justify-content: space-between; }
+    @media screen and (max-width: 910px) {
+      .video-controls__control {
+        flex-direction: row;
+        justify-content: flex-start; } }
   .video-controls__label {
     margin-right: 20px; }
   .video-controls__progress {

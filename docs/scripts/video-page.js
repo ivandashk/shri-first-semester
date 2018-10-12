@@ -57,7 +57,31 @@ const assignVideoEventHadlers = (video) => {
 
         toggleControls(video);
         toggleVideoActivity(video);
+        measureFrameBrightness(video);
     })
+};
+
+const measureFrameBrightness = (video) => {
+    // Определить уровень освещенности оригинального видео
+    const canvas = document.createElement('canvas');
+    const context = canvas.getContext('2d');
+
+    const scan = () => {
+        if (!activeVideo) return;
+
+        requestAnimationFrame(scan);
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+        const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+
+        let pixelsLightLevelSum = 0;
+        for (let i = 0; i < imageData.data.length; i += 4) {
+            pixelsLightLevelSum += (imageData.data[i] + imageData.data[i + 1] + imageData.data[i + 2]) / 3;
+        }
+
+        let lightLevelPercent = (pixelsLightLevelSum / (imageData.data.length / 4)) / 255 * 100;
+        document.getElementById('light').setAttribute('x2', `${lightLevelPercent}%`);
+    }
+    scan();
 };
 
 const toggleVideoActivity = (video) => {
