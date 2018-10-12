@@ -10,13 +10,17 @@ module.exports = {
         return responseEvents.filter(event => types.includes(event.type));
     },
 
-    filterEventsByPage: (responseEvents, page) => {
-        if (!/^\d+$/.test(page)) {
+    filterEventsByPage: (responseEvents, page, pageSize) => {
+        if (!isInteger(page) || (!!pageSize && !isInteger(pageSize))) {
             throw new Error('incorrect type');
         }
 
-        const eventsOnPage = 3;
-        const initialPageIndex = eventsOnPage * page;
+        const eventsOnPage = parseInt(pageSize) || 3;
+        const initialPageIndex = eventsOnPage * parseInt(page);
         return responseEvents.slice(initialPageIndex, initialPageIndex + eventsOnPage);
     }
+}
+
+const isInteger = (value) => {
+    return /^\d+$/.test(value);
 }

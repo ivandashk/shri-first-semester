@@ -46,7 +46,7 @@ app.post('/api/events', function(req, res){
         if (params.type)
             responseEvents = filterEventsByType(responseEvents, params.type);
         if (params.page)
-            responseEvents = filterEventsByPage(responseEvents, params.page);
+            responseEvents = filterEventsByPage(responseEvents, params.page, params.pageSize);
     } catch (err) {
         res.status(400).json({ error: err.message }).send();
         log(req, res.statusCode, err.message);
