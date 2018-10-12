@@ -2,6 +2,7 @@ const express = require('express');
 const url = require('url');
 const events = require('./events'); 
 const {filterEventsByType, filterEventsByPage} = require('./filters');
+const {log} = require('./logger');
 const app = express(); 
 const port = 8000; 
 
@@ -24,13 +25,17 @@ app.get('/status', function(req, res){
     const minutesDelta = timeDelta.getMinutes();
     const secondsDelta = timeDelta.getSeconds();
 
-	res.status(200).send(`${hoursDelta}:${minutesDelta}:${secondsDelta}`);
+    res.status(200).send(`${hoursDelta}:${minutesDelta}:${secondsDelta}`);
+    log(req, res.statusCode);
 });
 
 app.post('/api/events', function(req, res){
     const params = url.parse(req.url, true).query;
-    if (!params) {
+    var paramsCount = Object.getOwnPropertyNames(params);
+    
+    if (paramsCount.length === 0) {
         res.send(events);
+        log(req, res.statusCode);
         return;
     }
 
@@ -44,15 +49,19 @@ app.post('/api/events', function(req, res){
             responseEvents = filterEventsByPage(responseEvents, params.page);
     } catch (err) {
         res.status(400).json({ error: err.message }).send();
+        log(req, res.statusCode, err.message);
         return;
     }
     
     res.send({ "events": responseEvents });
+    log(req, res.statusCode);
 });
 
 app.get('*', function(req, res){
     res.status(404);
-    res.send('<h1>Page not found</h1>');
+    const message = 'Page not found';
+    res.send(`<h1>${message}</h1>`);
+    log(req, res.statusCode, message);
 });
 
 app.listen(port); 

@@ -2,7 +2,8 @@ module.exports = {
     filterEventsByType: (responseEvents, typeString) => {
         const types = typeString.split(':');
 
-        if (!types.every(type => type === 'info' || type === 'critical')) {
+        const knownTypes = ['info', 'critical'];
+        if (!types.every(type => knownTypes.includes(type))) {
             throw new Error('incorrect type');
         } 
 
