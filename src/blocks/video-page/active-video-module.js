@@ -117,6 +117,17 @@ const activeVideoModule = (function() {
         // Определить уровень освещенности оригинального видео
         const canvas = document.createElement('canvas');
         const context = canvas.getContext('2d');
+
+        // 4 значения на 1 пиксель: R, G, B, альфа-канал
+        const valuesPerPixel = 4;
+        // Точность измерений. От 1 до canvas.width. Больше коэффициент - больше точность, меньше производительность.
+        const precision = 7;
+        // Коэффициент некратности, обеспечивает эффект "лесенки" при выборе пикселей по высоте
+        const aliquantRatio = 0.95;
+        // Сколько пикселей пропускать при анализе
+        const skipPixels = Math.ceil(aliquantRatio * canvas.width / precision);
+        // На сколько значений в массиве должен сдвигаться итератор, чтобы переходить к следующему пикселю
+        const skipValuesInArray = (skipPixels + 1) * valuesPerPixel;
     
         const scan = () => {
             if (!activeVideo) return;
@@ -125,13 +136,13 @@ const activeVideoModule = (function() {
             context.drawImage(activeVideo, 0, 0, canvas.width, canvas.height);
             const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
     
+            // Сумма значений интенсивности серого цвета всех выбранных пикселей в кадре
             let pixelsLightLevelSum = 0;
-            const valuesPerPixel = 4;
-            for (let i = 0; i < imageData.data.length; i += valuesPerPixel) {
+            for (let i = 0; i < imageData.data.length; i += skipValuesInArray) {
                 pixelsLightLevelSum += (imageData.data[i] + imageData.data[i + 1] + imageData.data[i + 2]) / 3;
             }
     
-            let lightLevelPercent = (pixelsLightLevelSum / (imageData.data.length / valuesPerPixel)) / 255 * 100;
+            let lightLevelPercent = (pixelsLightLevelSum / (imageData.data.length / skipValuesInArray)) / 255 * 100;
             document.getElementById('light').setAttribute('x2', `${lightLevelPercent}%`);
         }
         scan();
