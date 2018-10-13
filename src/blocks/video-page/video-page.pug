@@ -1,10 +1,10 @@
 #main-page.main-page
     include ../header/header.pug
-    .video-page
-        video#video-1.video-page__video(muted, autoplay)
-        video#video-4.video-page__video(muted, autoplay)
-        video#video-2.video-page__video(muted, autoplay)
-        video#video-3.video-page__video(muted, autoplay)
+    #video-page.video-page
+        video#video-1.video-page__video(muted, autoplay, src='http://localhost:9191/master?url=http%3A%2F%2Flocalhost%3A3102%2Fstreams%2Fsosed%2Fmaster.m3u8')
+        video#video-2.video-page__video(muted, autoplay, src='http://localhost:9191/master?url=http%3A%2F%2Flocalhost%3A3102%2Fstreams%2Fhall%2Fmaster.m3u8')
+        video#video-3.video-page__video(muted, autoplay, src='http://localhost:9191/master?url=http%3A%2F%2Flocalhost%3A3102%2Fstreams%2Fdog%2Fmaster.m3u8')
+        video#video-4.video-page__video(muted, autoplay, src='http://localhost:9191/master?url=http%3A%2F%2Flocalhost%3A3102%2Fstreams%2Fcat%2Fmaster.m3u8')
     include ../footer/footer.pug
 include ../sidebar/sidebar.pug
 
