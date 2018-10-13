@@ -1,0 +1,25 @@
+#main-page.main-page
+    include ../header/header.pug
+    .video-page
+        video#video-1.video-page__video(muted, autoplay)
+        video#video-4.video-page__video(muted, autoplay)
+        video#video-2.video-page__video(muted, autoplay)
+        video#video-3.video-page__video(muted, autoplay)
+    include ../footer/footer.pug
+include ../sidebar/sidebar.pug
+
+#video-controls.video-controls
+    .video-controls__control
+        .video-controls__label Яркость:
+        input#brightness-input.video-controls__input(type='range' min="0" max="200" value="100")
+    .video-controls__control
+        .video-controls__label Контрастность:
+        input#contrast-input.video-controls__input(type='range' min="0" max="200" value="100")
+    .video-controls__control
+        .video-controls__label Уровень звука:
+        svg(width="255px" height="8px" viewBox="0 0 255 8")
+            line(id="volume" x1="0" y1="8" x2="255" y2="8" style="stroke: #DB5341; stroke-width: 8px;")
+    .video-controls__control
+        .video-controls__label Уровень освещенности:
+        svg(width="255px" height="8px" viewBox="0 0 255 8")
+            line(id="light" x1="0" y1="8" x2="255" y2="8" style="stroke: #FFCD00; stroke-width: 8px;")
