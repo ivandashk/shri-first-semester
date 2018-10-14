@@ -128,24 +128,101 @@ const activeVideoModule = (function() {
         const skipPixels = Math.ceil(aliquantRatio * canvas.width / precision);
         // На сколько значений в массиве должен сдвигаться итератор, чтобы переходить к следующему пикселю
         const skipValuesInArray = (skipPixels + 1) * valuesPerPixel;
-    
+        let imageData;
+
         const scan = () => {
             if (!activeVideo) return;
 
             requestAnimationFrame(scan);
             context.drawImage(activeVideo, 0, 0, canvas.width, canvas.height);
-            const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+            imageData = context.getImageData(0, 0, canvas.width, canvas.height);
     
             // Сумма значений интенсивности серого цвета всех выбранных пикселей в кадре
             let pixelsLightLevelSum = 0;
             for (let i = 0; i < imageData.data.length; i += skipValuesInArray) {
                 pixelsLightLevelSum += (imageData.data[i] + imageData.data[i + 1] + imageData.data[i + 2]) / 3;
             }
-    
+
             let lightLevelPercent = (pixelsLightLevelSum / (imageData.data.length / skipValuesInArray)) / 255 * 100;
             document.getElementById('light').setAttribute('x2', `${lightLevelPercent}%`);
         }
         scan();
+    };
+
+    const scanMovement = () => {
+        // Определить уровень освещенности оригинального видео
+        const canvas = document.getElementById('canvas');
+        const context = canvas.getContext('2d');
+        activeVideo.parentElement.appendChild(canvas);
+        canvas.style.zIndex = '20';
+        context.strokeStyle = 'white';
+
+        // 4 значения на 1 пиксель: R, G, B, альфа-канал
+        const valuesPerPixel = 4;
+        // Значения от 1 до 255. Чем меньше значение, тем выше чувствительность звхвата движения.
+        const delta = 60;
+        // Период обновления данных о движении (в кадрах)
+        const captureFramePeriod = 10;
+
+        context.drawImage(activeVideo, 0, 0, canvas.width, canvas.height);
+        let prevImageData = [];
+
+        let curFrame = captureFramePeriod;
+        let topPixel, bottomPixel;
+        let startX, startY, endX, endY;
+        let curImagePixelLightLevel, prevImagePixelLightLevel;
+
+        let scan = () => {
+            if (!activeVideo) return;
+
+            requestAnimationFrame(scan);
+            context.drawImage(activeVideo, 0, 0, canvas.width, canvas.height);
+            imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+            if (prevImageData.length === 0) prevImageData = imageData;
+
+            if (curFrame === 0) {
+                topPixel = 0;
+                bottomPixel = 0;
+
+                for (let i = 0; i < imageData.data.length; i += valuesPerPixel) {
+                    curImagePixelLightLevel = (imageData.data[i] + imageData.data[i + 1] + imageData.data[i + 2]) / 3;
+                    prevImagePixelLightLevel = (prevImageData.data[i] + prevImageData.data[i + 1] + prevImageData.data[i + 2]) / 3;
+
+                    // Если уровни серого на текущей и предыдущей картинке отличаются более,
+                    // чем на дельту, регистрируем движение
+                    if (Math.abs(curImagePixelLightLevel - prevImagePixelLightLevel) > delta) {
+                        if (!topPixel) topPixel = i / valuesPerPixel;
+                        bottomPixel = i / valuesPerPixel; 
+                    }
+                }
+
+                startX = topPixel % canvas.width;
+                startY = topPixel / canvas.width;
+                endX = bottomPixel % canvas.width - startX;
+                endY = bottomPixel / canvas.width - startY;
+
+                prevImageData = imageData;
+                curFrame = captureFramePeriod;
+            }
+
+            context.clearRect(0, 0, canvas.width, canvas.height);
+            context.beginPath();
+            
+            context.putImageData(imageData, 0, 0);
+            context.rect(startX, startY, endX, endY);
+            context.stroke();
+
+            curFrame--;
+        }
+
+        scan();
+    };
+
+    const toggleCanvas = () => {
+        const canvas = document.getElementById('canvas');
+        // Показывать только на десктопе
+        if (document.body.clientWidth > 910)
+            canvas.classList.toggle('video-page__canvas_opened');
     };
 
     return {
@@ -164,7 +241,8 @@ const activeVideoModule = (function() {
                 });
                 centerVideo();
                 assignControlsEventHandlers();
-                measureFrameBrightness(video);
+                measureFrameBrightness();
+                scanMovement();
                 activeVideo.muted  = false;
             } else {
                 customSettings[activeVideo.id].audioData.audioCtx.suspend();
@@ -174,6 +252,7 @@ const activeVideoModule = (function() {
                 activeVideo = undefined;
             }
 
+            toggleCanvas();
             toggleControls();
         }
     }
