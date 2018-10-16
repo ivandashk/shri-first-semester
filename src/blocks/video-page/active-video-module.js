@@ -11,10 +11,11 @@ const activeVideoModule = (function() {
 
     const setInitialSettings = (video) => {
         // Устанавливаем начальные значения настроек
-        customSettings[video.id] = {};
-        customSettings[video.id].brightness = 100;
-        customSettings[video.id].contrast = 100;
-        initializeAudioContext(video, customSettings[video.id]);
+        const id = video.id;
+        customSettings[id] = {};
+        customSettings[id].brightness = 100;
+        customSettings[id].contrast = 100;
+        initializeAudioContext(video, customSettings[id]);
     };
 
     const toggleControls = () => {
