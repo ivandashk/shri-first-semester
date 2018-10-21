@@ -10,7 +10,7 @@
     padding-left: 40px;
     z-index: 99;
 
-    @media screen and (max-width: $screen-xs) {
+    @media screen and (max-width: $screen-md) {
         grid-template-areas: 
             "logo nav expander";
         grid-template-columns: 160px 1fr 16px;
@@ -28,7 +28,7 @@
     }
 
     &__nav {
-        @media screen and (max-width: $screen-xs) {
+        @media screen and (max-width: $screen-md) {
             display: none;
         }
     }
@@ -41,7 +41,7 @@
         height: 16px;
         width: 16px;
         
-        @media screen and (max-width: $screen-xs) {
+        @media screen and (max-width: $screen-md) {
             grid-column: 3;
             display: block;
         }
