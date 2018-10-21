@@ -545,6 +545,16 @@ html, body {
         .video-page__video_opened {
           -webkit-transform: scale(1);
                   transform: scale(1); } }
+  .video-page__canvas {
+    position: fixed;
+    width: 200px;
+    height: 150px;
+    visibility: hidden;
+    margin-left: -80px; }
+    .video-page__canvas_opened {
+      transition: visibility .3s;
+      visibility: visible;
+      z-index: 10; }
 
 .video-controls {
   background-color: #FFF;
