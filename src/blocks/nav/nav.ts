@@ -7,9 +7,12 @@ for (let i = 0; i < navs.length; i++) {
 
 for (let i = 0; i < navItems.length; i++) {
     navItems[i].addEventListener('click', (e) => {
-        for (let j = 0; j < e.target.parentNode.children.length; j++) {
-            e.target.parentNode.children[j].classList.remove('nav__item_active');
+        const target = e.target as HTMLElement;
+        const targetParent = target.parentNode as ParentNode;
+
+        for (let j = 0; j < targetParent.children.length; j++) {
+            targetParent.children[j].classList.remove('nav__item_active');
         }
-        e.target.classList.toggle('nav__item_active');
+        target.classList.toggle('nav__item_active');
     })
 }
