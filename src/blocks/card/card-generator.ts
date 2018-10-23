@@ -1,151 +1,9 @@
-import data from "./events.js"
-
-class CardEvent {
-    type: string;
-    title: string;
-    source: string;
-    time: string;
-    icon: string;
-    size: string;
-    description?: string;
-    data?: CardData; 
-
-    hasImage: boolean = false;
-    isCritical: boolean = false;
-    iconTheme: string = '';
-
-    constructor(json: Partial<CardEvent>) {
-        this.type = json.type as string;
-        this.title = json.title as string;
-        this.source = json.source as string;
-        this.time = json.time as string;
-        this.icon = json.icon as string;
-        this.size = json.size as string;
-        this.description = json.description as string;
-
-        this.identifyDataType(json.data);
-        this.setModifiers();      
-    }
-
-    static fromJSON = (jsonObjects: Array<object>): Array<CardEvent> => {
-        const events: Array<CardEvent> = [];
-        jsonObjects.forEach(jsonObject => {
-            events.push(new CardEvent(jsonObject));
-        })
-        return events;
-    };  
-
-    private identifyDataType(data: CardData | undefined) {
-        if(hasButtons(data)) {
-            this.data = new CardDataButtons(data);
-        } else if (hasImage(data)) {
-            this.data = new CardDataImage(data);
-        } else if (hasGraph(data)) {
-            this.data = new CardDataGraph(data);
-        } else if (hasMeasurements(data)) {
-            this.data = new CardDataMeasurements(data);
-        } else if (hasMusic(data)) {
-            this.data = new CardDataMusic(data);
-        }
-    }
-
-    private setModifiers() {
-        if (this.data instanceof CardDataImage || this.data instanceof CardDataGraph)
-            this.hasImage = true;
-        if (this.type === 'critical')
-            this.isCritical = true;
-        if (this.isCritical)
-            this.iconTheme = '-white';
-    }
-}
-
-// -------- CardData type guards ---------
-
-const hasButtons = (obj: any): obj is CardDataButtons => {
-    return !!obj && !!obj.buttons;
-}
-
-const hasImage = (obj: any): obj is CardDataImage => {
-    return !!obj && !!obj.image;
-}
-
-const hasGraph = (obj: any): obj is CardDataGraph => {
-    return !!obj && !!obj.type && obj.type === 'graph';
-}
-
-const hasMeasurements = (obj: any): obj is CardDataMeasurements => {
-    return !!obj && !!obj.temperature && !!obj.humidity;
-}
-
-const hasMusic = (obj: any): obj is CardDataMusic => {
-    return !!obj && !!obj.albumcover && !!obj.artist && !!obj.track && !!obj.volume;
-}
-
-// -------- CardData types ---------
-
-abstract class CardData {
-}
-
-class CardDataGraph extends CardData {
-    type: string;
-
-    constructor(data: Partial<CardDataGraph>) {
-        super();
-        this.type = data.type as string;
-    }
-}
-
-class CardDataButtons extends CardData {
-    buttons: Array<string>;
-
-    constructor(data: Partial<CardDataButtons>) {
-        super();
-        this.buttons = data.buttons as Array<string>;
-    }
-}
-
-class CardDataImage extends CardData {
-    image: string;
-
-    constructor(data: Partial<CardDataImage>) {
-        super();
-        this.image = data.image as string;
-    }
-}
-
-class CardDataMeasurements extends CardData {
-    temperature: number;
-    humidity: number;
-    [key:string]: number;
-
-    constructor(data: Partial<CardDataMeasurements>) {
-        super();
-        this.temperature = data.temperature as number;
-        this.humidity = data.humidity as number;
-    }
-}
-
-class CardDataMusic extends CardData {
-    albumcover: string;
-    artist: string;
-    track: MusicTrack;
-    volume: number;
-
-    constructor(data: Partial<CardDataMusic>) {
-        super();
-        this.albumcover = data.albumcover as string;
-        this.artist = data.artist as string;
-        this.track = data.track as MusicTrack;
-        this.volume = data.volume as number;
-    }
-}
-
-interface MusicTrack {
-    name: string;
-    length: number;
-}
-
-// ---------------------------------
+import {
+    CardDataButtons, 
+    CardDataMeasurements, 
+    CardDataMusic
+} from "./card-event-data.js"
+import CardEvent from "./card-event.js"
 
 const appendDiv = (parent: HTMLElement) => {
     const div = document.createElement("div");
@@ -365,7 +223,7 @@ const appendCameraInterface = (card: HTMLElement) => {
     brightness.innerHTML = 'Яркость: 100%';
 }
 
-const generateCards = (events: Array<CardEvent>) => {
+export default (events: Array<CardEvent>) => {
     events.forEach((event) => {
         let card = createCard();
         setSize(event.size, card);
@@ -394,6 +252,3 @@ const generateCards = (events: Array<CardEvent>) => {
             appendCameraInterface(card);
     });
 }
-
-const events = CardEvent.fromJSON(data.events);
-generateCards(events);

@@ -43,7 +43,10 @@ gulp.task('js', () => {
     return gulp.src([
             './src/blocks/nav/*.ts', 
             './src/blocks/sidebar/*.ts',
+            './src/blocks/card/card-main.ts',
             './src/blocks/card/card-generator.ts',
+            './src/blocks/card/card-event.ts',
+            './src/blocks/card/card-event-data.ts',
             './src/blocks/card/events.ts'
         ])
         .pipe(plumber())
