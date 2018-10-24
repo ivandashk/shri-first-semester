@@ -8,12 +8,12 @@ import {
 } from "./card-event-data.js"
 
 export default class CardEvent {
-    type: string;
-    title: string;
-    source: string;
-    time: string;
-    icon: string;
-    size: string;
+    type: string = '';
+    title: string = '';
+    source: string = '';
+    time: string = '';
+    icon: string = '';
+    size: string = '';
     description?: string;
     data?: CardData; 
 
@@ -22,14 +22,7 @@ export default class CardEvent {
     iconTheme: string = '';
 
     constructor(json: Partial<CardEvent>) {
-        this.type = json.type as string;
-        this.title = json.title as string;
-        this.source = json.source as string;
-        this.time = json.time as string;
-        this.icon = json.icon as string;
-        this.size = json.size as string;
-        this.description = json.description as string;
-
+        Object.assign(this, json);
         this.identifyDataType(json.data);
         this.setModifiers();      
     }

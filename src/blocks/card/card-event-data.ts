@@ -2,11 +2,11 @@ abstract class CardData {
 }
 
 class CardDataGraph extends CardData {
-    type: string;
+    type: string = '';
 
     constructor(data: Partial<CardDataGraph>) {
         super();
-        this.type = data.type as string;
+        Object.assign(this, data);
     }
 
     static isThisType = (obj: any): obj is CardDataGraph => {
@@ -15,11 +15,11 @@ class CardDataGraph extends CardData {
 }
 
 class CardDataButtons extends CardData {
-    buttons: Array<string>;
+    buttons: Array<string> = [''];
 
     constructor(data: Partial<CardDataButtons>) {
         super();
-        this.buttons = data.buttons as Array<string>;
+        Object.assign(this, data);
     }
 
     static isThisType = (obj: any): obj is CardDataButtons => {
@@ -28,11 +28,11 @@ class CardDataButtons extends CardData {
 }
 
 class CardDataImage extends CardData {
-    image: string;
+    image: string = '';
 
     constructor(data: Partial<CardDataImage>) {
         super();
-        this.image = data.image as string;
+        Object.assign(this, data);
     }
 
     static isThisType = (obj: any): obj is CardDataImage => {
@@ -41,14 +41,13 @@ class CardDataImage extends CardData {
 }
 
 class CardDataMeasurements extends CardData {
-    temperature: number;
-    humidity: number;
+    temperature: number = 0;
+    humidity: number = 0;
     [key:string]: number;
 
     constructor(data: Partial<CardDataMeasurements>) {
         super();
-        this.temperature = data.temperature as number;
-        this.humidity = data.humidity as number;
+        Object.assign(this, data);
     }
 
     static isThisType = (obj: any): obj is CardDataMeasurements => {
@@ -57,17 +56,14 @@ class CardDataMeasurements extends CardData {
 }
 
 class CardDataMusic extends CardData {
-    albumcover: string;
-    artist: string;
-    track: MusicTrack;
-    volume: number;
+    albumcover: string = '';
+    artist: string = '';
+    track: MusicTrack = { name: '', length: 0};
+    volume: number = 0;
 
     constructor(data: Partial<CardDataMusic>) {
         super();
-        this.albumcover = data.albumcover as string;
-        this.artist = data.artist as string;
-        this.track = data.track as MusicTrack;
-        this.volume = data.volume as number;
+        Object.assign(this, data);
     }
 
     static isThisType = (obj: any): obj is CardDataMusic => {
