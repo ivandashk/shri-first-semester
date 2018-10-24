@@ -2,6 +2,7 @@
   "name": "shri-first-semester",
   "version": "1.0.0",
   "devDependencies": {
+    "@types/webaudioapi": "0.0.27",
     "browser-sync": "^2.24.6",
     "gulp": "^4.0.0",
     "gulp-autoprefixer": "^5.0.0",

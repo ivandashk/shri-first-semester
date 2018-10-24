@@ -1,15 +1,16 @@
 const initAllVideos = () => {
     // Инициализация всех видео
-    var videos = document.getElementById('video-page').children;
+    const videosContainer = document.getElementById('video-page') as HTMLElement;
+    const videos = videosContainer.children;
     for (let i = 0; i < videos.length; i++) {
-        initVideo(videos[i]);
+        initVideo(videos[i] as HTMLVideoElement);
     }
 };
 
-function initVideo(video) {
+function initVideo(video: HTMLVideoElement) {
     // Инициализация конкретного видео
     if (Hls.isSupported()) {
-        var hls = new Hls();
+        const hls = new Hls();
         hls.loadSource(video.src);
         hls.attachMedia(video);
         hls.on(Hls.Events.MANIFEST_PARSED, function () {
@@ -25,14 +26,23 @@ function initVideo(video) {
     assignVideoEventHadlers(video);
 }
 
-const assignVideoEventHadlers = (video) => {
+const assignVideoEventHadlers = (video: HTMLVideoElement) => {
     // Назначаем обработчики событий на видео
     video.addEventListener('click', () => {
         activeVideoModule.toggleVideoActivity(video);
     })
 };
 
-const AudioContext = window.AudioContext || window.webkitAudioContext;
-if (!AudioContext) alert('Ваш браузер не поддерживает Web Audio API');
+const getAudioContext = (obj: any): obj is { 
+    // Получить аудиоконтекст
+    webkitAudioContext: AudioContextConstructor;
+    AudioContext: AudioContextConstructor;
+} => {
+    return obj.webkitAudioContext || obj.AudioContext;
+}
+
+let audioContext = getAudioContext(window);
+if (!audioContext) alert('Ваш браузер не поддерживает Web Audio API');
 
 initAllVideos();
+const activeVideoModule = new ActiveVideo();

@@ -1,65 +1,69 @@
-const activeVideoModule = (function() {
+class ActiveVideo {
     //Модуль для работы с активным видео
-    let activeVideo = undefined;
+    private controls = document.getElementById('video-controls') as HTMLElement;
+    private brightnessInput = document.getElementById('brightness-input') as HTMLInputElement;
+    private contrastInput = document.getElementById('contrast-input') as HTMLInputElement;
 
-    const controls = document.getElementById('video-controls');
-    const brightnessInput = document.getElementById('brightness-input');
-    const contrastInput = document.getElementById('contrast-input');
+    private activeVideo: HTMLVideoElement | undefined;
+    private customSettings: CustomSettings = {};
 
-    // Объект с пользовательскими настройками всех видео
-    const customSettings = {};
-
-    const setInitialSettings = (video) => {
+    private setInitialSettings = (video: HTMLVideoElement) => {
         // Устанавливаем начальные значения настроек
-        const id = video.id;
-        customSettings[id] = {};
-        customSettings[id].brightness = 100;
-        customSettings[id].contrast = 100;
-        initializeAudioContext(video, customSettings[id]);
-    };
+        this.customSettings[video.id] = new SettingsSet(video);
+    }
 
-    const toggleControls = () => {
+    private toggleControls = () => {
         // Скрываем/показываем контролы для видео
-        controls.classList.toggle("video-controls_opened");
-        if (activeVideo) {
-            brightnessInput.value = customSettings[activeVideo.id].brightness;
-            contrastInput.value = customSettings[activeVideo.id].contrast;
+        this.controls.classList.toggle("video-controls_opened");
+        if (this.activeVideo) {
+            this.brightnessInput.value = this.customSettings[this.activeVideo.id].brightness.toString();
+            this.contrastInput.value = this.customSettings[this.activeVideo.id].contrast.toString();
         }
     };
 
-    const assignControlsEventHandlers = () => {
+    private assignControlsEventHandlers = () => {
         // Назначаем обработчики событий 
-        brightnessInput.addEventListener('input', brightnessListener);
-        contrastInput.addEventListener('input', contrastListener);
+        this.brightnessInput.addEventListener('input', this.brightnessListener);
+        this.contrastInput.addEventListener('input', this.contrastListener);
     };
 
-    const removeControlsEventHandlers = () => {
+    private removeControlsEventHandlers = () => {
         // Снимаем обработчики событий 
-        brightnessInput.removeEventListener('input', brightnessListener)
-        contrastInput.removeEventListener('input', contrastListener)
+        this.brightnessInput.removeEventListener('input', this.brightnessListener)
+        this.contrastInput.removeEventListener('input', this.contrastListener)
     };
 
-    const brightnessListener = (e) => {
+    private brightnessListener = (e: Event) => {
         // Слушатель события изменения контрола яркости
-        customSettings[activeVideo.id].brightness = e.target.value;
-        updateFilter(activeVideo);
+        if (!this.activeVideo) return;
+
+        const target = e.target as HTMLInputElement;
+        this.customSettings[this.activeVideo.id].brightness = parseInt(target.value);
+        this.updateFilter();
     };
     
-    const contrastListener = (e) => {
+    private contrastListener = (e: Event) => {
         // Слушатель события изменения контрола контраста
-        customSettings[activeVideo.id].contrast = e.target.value;
-        updateFilter(activeVideo);
+        if (!this.activeVideo) return;
+
+        const target = e.target as HTMLInputElement;
+        this.customSettings[this.activeVideo.id].contrast = parseInt(target.value);
+        this.updateFilter();
     };
 
-    const updateFilter = () => {
+    private updateFilter = () => {
         // Обновляем фильтр на видео в соответствии с новыми значениями
-        activeVideo.style.filter = `brightness(${customSettings[activeVideo.id].brightness}%) 
-            contrast(${customSettings[activeVideo.id].contrast}%)`;
+        if (!this.activeVideo) return;
+
+        this.activeVideo.style.filter = `brightness(${this.customSettings[this.activeVideo.id].brightness}%) 
+            contrast(${this.customSettings[this.activeVideo.id].contrast}%)`;
     };
 
-    const updateVolumeBar = () => {
+    private updateVolumeBar = () => {
         // Перерисовываем индикатор уровня звука, пока активен аудиоконтекст
-        const audioData = customSettings[activeVideo.id].audioData;
+        if (!this.activeVideo) return;
+
+        const audioData = this.customSettings[this.activeVideo.id].audioData;
 
         const draw = () => {
             if (audioData.audioCtx.state !== 'running') return;
@@ -67,43 +71,29 @@ const activeVideoModule = (function() {
             requestAnimationFrame(draw);
             
             audioData.analyser.getByteFrequencyData(audioData.dataArray);
-            audioData.volumePercent = parseInt(Math.max.apply(null, audioData.dataArray) / 255 * 100);
-            document.getElementById('volume').setAttribute('x2', `${audioData.volumePercent}%`);
+            audioData.volumePercent = Math.max.apply(null, audioData.dataArray) / 255 * 100;
+
+            const volume = document.getElementById('volume') as HTMLElement;
+            volume.setAttribute('x2', `${audioData.volumePercent}%`);
         }
 
         draw();
     };
 
-    const initializeAudioContext = (video, settings) => {
-        // Закрепляем за каждым видео его аудиоконтекст и настраиваем анализатор
-        settings.audioData = {};
-        let audioData = settings.audioData;
-        audioData.audioCtx = new AudioContext();
-
-        const source = audioData.audioCtx.createMediaElementSource(video);
-        audioData.analyser = audioData.audioCtx.createAnalyser();
-        source.connect(audioData.analyser);
-        audioData.analyser.connect(audioData.audioCtx.destination);
-
-        audioData.analyser.smoothingTimeConstant = 0.9;
-        audioData.analyser.fftSize = 32;
-
-        audioData.dataArray = new Uint8Array(audioData.analyser.frequencyBinCount);
-        audioData.analyser.getByteFrequencyData(audioData.dataArray);
-        audioData.volumePercent = 0;
-    }
-
-    const centerVideo = () => {
+    private centerVideo = () => {
         // Центрируем видео
+        if (!this.activeVideo) return;
+        
         const bottomOffset = 55;
     
         const centerX = document.body.clientWidth / 2;
         const centerY = document.body.clientHeight / 2 - bottomOffset;
     
-        const videoStyle = window.getComputedStyle(activeVideo);
-        const boundingRect = activeVideo.getBoundingClientRect();
+        const videoStyle = window.getComputedStyle(this.activeVideo);
+        const boundingRect = this.activeVideo.getBoundingClientRect() as DOMRect;
         const transformOrigin = videoStyle.getPropertyValue('transform-origin').match(/\d+(.\d+)?/g);
-        
+        if (!transformOrigin) return;
+
         // Магический костыль
         const desktopScale = 2.8;
         const mobileScale = 1.1;
@@ -111,13 +101,14 @@ const activeVideoModule = (function() {
     
         const pictureCenter = [boundingRect.x + parseFloat(transformOrigin[0]), boundingRect.y + parseFloat(transformOrigin[1])];
         const newTransformValue = `translate(${centerX - pictureCenter[0]}px, ${centerY - pictureCenter[1]}px) scale(${scale})`;
-        activeVideo.style.transform = newTransformValue;
+        this.activeVideo.style.transform = newTransformValue;
     };
 
-    const measureFrameBrightness = () => {
+    private measureFrameBrightness = () => {
         // Определить уровень освещенности оригинального видео
         const canvas = document.createElement('canvas');
         const context = canvas.getContext('2d');
+        if (!context) return;
 
         // 4 значения на 1 пиксель: R, G, B, альфа-канал
         const valuesPerPixel = 4;
@@ -132,10 +123,10 @@ const activeVideoModule = (function() {
         let imageData;
 
         const scan = () => {
-            if (!activeVideo) return;
+            if (!this.activeVideo) return;
 
             requestAnimationFrame(scan);
-            context.drawImage(activeVideo, 0, 0, canvas.width, canvas.height);
+            context.drawImage(this.activeVideo, 0, 0, canvas.width, canvas.height);
             imageData = context.getImageData(0, 0, canvas.width, canvas.height);
     
             // Сумма значений интенсивности серого цвета всех выбранных пикселей в кадре
@@ -145,16 +136,23 @@ const activeVideoModule = (function() {
             }
 
             let lightLevelPercent = (pixelsLightLevelSum / (imageData.data.length / skipValuesInArray)) / 255 * 100;
-            document.getElementById('light').setAttribute('x2', `${lightLevelPercent}%`);
+
+            const light = document.getElementById('light') as HTMLElement;
+            light.setAttribute('x2', `${lightLevelPercent}%`);
         }
         scan();
     };
 
-    const scanMovement = () => {
+    private scanMovement = () => {
         // Определить уровень освещенности оригинального видео
-        const canvas = document.getElementById('canvas');
+        if (!this.activeVideo) return;
+        
+        const canvas = document.getElementById('canvas') as HTMLCanvasElement;
         const context = canvas.getContext('2d');
-        activeVideo.parentElement.appendChild(canvas);
+        if (!context) return;
+
+        const videoContainer = this.activeVideo.parentElement as HTMLElement;
+        videoContainer.appendChild(canvas);
         canvas.style.zIndex = '20';
         context.strokeStyle = 'white';
 
@@ -165,21 +163,21 @@ const activeVideoModule = (function() {
         // Период обновления данных о движении (в кадрах)
         const captureFramePeriod = 10;
 
-        context.drawImage(activeVideo, 0, 0, canvas.width, canvas.height);
-        let prevImageData = [];
+        context.drawImage(this.activeVideo, 0, 0, canvas.width, canvas.height);
+        let prevImageData: ImageData;
 
         let curFrame = captureFramePeriod;
         let topPixel, bottomPixel;
-        let startX, startY, endX, endY;
+        let startX: number, startY: number, endX: number, endY: number;
         let curImagePixelLightLevel, prevImagePixelLightLevel;
 
         let scan = () => {
-            if (!activeVideo) return;
+            if (!this.activeVideo) return;
 
             requestAnimationFrame(scan);
-            context.drawImage(activeVideo, 0, 0, canvas.width, canvas.height);
-            imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-            if (prevImageData.length === 0) prevImageData = imageData;
+            context.drawImage(this.activeVideo, 0, 0, canvas.width, canvas.height);
+            const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+            if (!prevImageData) prevImageData = imageData;
 
             if (curFrame === 0) {
                 topPixel = 0;
@@ -219,42 +217,40 @@ const activeVideoModule = (function() {
         scan();
     };
 
-    const toggleCanvas = () => {
-        const canvas = document.getElementById('canvas');
+    private toggleCanvas = () => {
+        const canvas = document.getElementById('canvas') as HTMLCanvasElement;
         // Показывать только на десктопе
         if (document.body.clientWidth > 910)
             canvas.classList.toggle('video-page__canvas_opened');
     };
 
-    return {
-        toggleVideoActivity: (video) => {
-            // Переключиаем активность видео
-            if(!customSettings[video.id]) {
-                setInitialSettings(video);
-            }
-
-            video.classList.toggle("video-page__video_opened");
-
-            if (!activeVideo) {
-                activeVideo = video;
-                customSettings[activeVideo.id].audioData.audioCtx.resume().then(() => {
-                    updateVolumeBar();
-                });
-                centerVideo();
-                assignControlsEventHandlers();
-                measureFrameBrightness();
-                scanMovement();
-                activeVideo.muted  = false;
-            } else {
-                customSettings[activeVideo.id].audioData.audioCtx.suspend();
-                activeVideo.style.transform = "";
-                activeVideo.muted  = true;
-                removeControlsEventHandlers();
-                activeVideo = undefined;
-            }
-
-            toggleCanvas();
-            toggleControls();
+    public toggleVideoActivity = (video: HTMLVideoElement) => {
+        // Переключиаем активность видео
+        if(!this.customSettings[video.id]) {
+            this.setInitialSettings(video);
         }
+
+        video.classList.toggle("video-page__video_opened");
+
+        if (!this.activeVideo) {
+            this.activeVideo = video;
+            this.customSettings[this.activeVideo.id].audioData.audioCtx.resume().then(() => {
+                this.updateVolumeBar();
+            });
+            this.centerVideo();
+            this.assignControlsEventHandlers();
+            this.measureFrameBrightness();
+            this.scanMovement();
+            this.activeVideo.muted  = false;
+        } else {
+            this.customSettings[this.activeVideo.id].audioData.audioCtx.suspend();
+            this.activeVideo.style.transform = "";
+            this.activeVideo.muted  = true;
+            this.removeControlsEventHandlers();
+            this.activeVideo = undefined;
+        }
+
+        this.toggleCanvas();
+        this.toggleControls();
     }
-  }());
+};
