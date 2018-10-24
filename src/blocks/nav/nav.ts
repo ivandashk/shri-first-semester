@@ -7,7 +7,7 @@ for (let i = 0; i < navs.length; i++) {
 
 for (let i = 0; i < navItems.length; i++) {
     navItems[i].addEventListener('click', (e) => {
-        const target = e.target as HTMLElement;
+        const target = cast(e.target, HTMLElement);
         const targetParent = target.parentNode as ParentNode;
 
         for (let j = 0; j < targetParent.children.length; j++) {

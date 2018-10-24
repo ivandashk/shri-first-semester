@@ -1,8 +1,8 @@
 class ActiveVideo {
     //Модуль для работы с активным видео
-    private controls = document.getElementById('video-controls') as HTMLElement;
-    private brightnessInput = document.getElementById('brightness-input') as HTMLInputElement;
-    private contrastInput = document.getElementById('contrast-input') as HTMLInputElement;
+    private controls = cast(document.getElementById('video-controls'), HTMLElement);
+    private brightnessInput = cast(document.getElementById('brightness-input'), HTMLInputElement);
+    private contrastInput = cast(document.getElementById('contrast-input'), HTMLInputElement);
 
     private activeVideo: HTMLVideoElement | undefined;
     private customSettings: CustomSettings = {};
@@ -37,7 +37,7 @@ class ActiveVideo {
         // Слушатель события изменения контрола яркости
         if (!this.activeVideo) return;
 
-        const target = e.target as HTMLInputElement;
+        const target = cast(e.target, HTMLInputElement);
         this.customSettings[this.activeVideo.id].brightness = parseInt(target.value);
         this.updateFilter();
     };
@@ -46,7 +46,7 @@ class ActiveVideo {
         // Слушатель события изменения контрола контраста
         if (!this.activeVideo) return;
 
-        const target = e.target as HTMLInputElement;
+        const target = cast(e.target, HTMLInputElement);
         this.customSettings[this.activeVideo.id].contrast = parseInt(target.value);
         this.updateFilter();
     };
@@ -73,7 +73,7 @@ class ActiveVideo {
             audioData.analyser.getByteFrequencyData(audioData.dataArray);
             audioData.volumePercent = Math.max.apply(null, audioData.dataArray) / 255 * 100;
 
-            const volume = document.getElementById('volume') as HTMLElement;
+            const volume = document.getElementById('volume') as HTMLOrSVGImageElement;
             volume.setAttribute('x2', `${audioData.volumePercent}%`);
         }
 
@@ -90,7 +90,7 @@ class ActiveVideo {
         const centerY = document.body.clientHeight / 2 - bottomOffset;
     
         const videoStyle = window.getComputedStyle(this.activeVideo);
-        const boundingRect = this.activeVideo.getBoundingClientRect() as DOMRect;
+        const boundingRect = cast(this.activeVideo.getBoundingClientRect(), DOMRect);
         const transformOrigin = videoStyle.getPropertyValue('transform-origin').match(/\d+(.\d+)?/g);
         if (!transformOrigin) return;
 
@@ -136,8 +136,7 @@ class ActiveVideo {
             }
 
             let lightLevelPercent = (pixelsLightLevelSum / (imageData.data.length / skipValuesInArray)) / 255 * 100;
-
-            const light = document.getElementById('light') as HTMLElement;
+            const light = document.getElementById('light') as HTMLOrSVGImageElement;
             light.setAttribute('x2', `${lightLevelPercent}%`);
         }
         scan();
@@ -147,11 +146,11 @@ class ActiveVideo {
         // Определить уровень освещенности оригинального видео
         if (!this.activeVideo) return;
         
-        const canvas = document.getElementById('canvas') as HTMLCanvasElement;
+        const canvas = cast(document.getElementById('canvas'), HTMLCanvasElement);
         const context = canvas.getContext('2d');
         if (!context) return;
 
-        const videoContainer = this.activeVideo.parentElement as HTMLElement;
+        const videoContainer = cast(this.activeVideo.parentElement, HTMLElement);
         videoContainer.appendChild(canvas);
         canvas.style.zIndex = '20';
         context.strokeStyle = 'white';
@@ -218,7 +217,7 @@ class ActiveVideo {
     };
 
     private toggleCanvas = () => {
-        const canvas = document.getElementById('canvas') as HTMLCanvasElement;
+        const canvas = cast(document.getElementById('canvas'), HTMLCanvasElement);
         // Показывать только на десктопе
         if (document.body.clientWidth > 910)
             canvas.classList.toggle('video-page__canvas_opened');
@@ -231,6 +230,7 @@ class ActiveVideo {
         }
 
         video.classList.toggle("video-page__video_opened");
+        this.toggleControls();
 
         if (!this.activeVideo) {
             this.activeVideo = video;
@@ -251,6 +251,5 @@ class ActiveVideo {
         }
 
         this.toggleCanvas();
-        this.toggleControls();
     }
 };

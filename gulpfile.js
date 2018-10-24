@@ -45,6 +45,7 @@ gulp.task('js', () => {
             './src/blocks/sidebar/*.ts',
             './src/blocks/card/*.ts',
             './src/blocks/video-page/*.ts',
+            './src/utils/*.ts',
         ])
         .pipe(plumber())
         .pipe(tsProject())

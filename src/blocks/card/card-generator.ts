@@ -12,7 +12,7 @@ const appendDiv = (parent: HTMLElement) => {
 }
 
 const createCard = () => {
-    const ribbon = document.getElementById("ribbon") as HTMLElement;
+    const ribbon = cast(document.getElementById("ribbon"), HTMLElement);
     const card = appendDiv(ribbon);
     card.classList.add("card");
     return card;
@@ -105,11 +105,11 @@ const appendDescription = (event: CardEvent, card: HTMLElement) => {
 }
 
 const appendPlayer = (data: CardDataMusic, card: HTMLElement) => {
-    const player = document.getElementById('player') as HTMLTemplateElement;
-    const logo = player.content.querySelector('.player__logo') as HTMLImageElement;
-    const name = player.content.querySelector('.player__name') as HTMLElement;
-    const trackLength = player.content.querySelector('.player__value_time') as HTMLElement;
-    const volume = player.content.querySelector('.player__value_volume') as HTMLElement;
+    const player = cast(document.getElementById('player'), HTMLTemplateElement);
+    const logo = cast(player.content.querySelector('.player__logo'), HTMLImageElement);
+    const name = cast(player.content.querySelector('.player__name'), HTMLElement);
+    const trackLength = cast(player.content.querySelector('.player__value_time'), HTMLElement);
+    const volume = cast(player.content.querySelector('.player__value_volume'), HTMLElement);
 
     logo.src = data.albumcover;
     name.innerHTML = `${data.artist} - ${data.track.name}`;
@@ -169,9 +169,9 @@ const appendMeasurements = (data: CardDataMeasurements, card: HTMLElement) => {
     ];
 
     templates.forEach((template) => {
-        const measurement = document.getElementById('measurement') as HTMLTemplateElement;
-        const text = measurement.content.querySelector('.measurement__text') as HTMLElement;
-        const value = measurement.content.querySelector('.measurement__value') as HTMLElement;
+        const measurement = cast(document.getElementById('measurement'), HTMLTemplateElement);
+        const text = cast(measurement.content.querySelector('.measurement__text'), HTMLElement);
+        const value = cast(measurement.content.querySelector('.measurement__value'), HTMLElement);
 
         text.innerHTML = template[1];
         value.innerHTML = data[template[0]] + template[2];
@@ -181,7 +181,7 @@ const appendMeasurements = (data: CardDataMeasurements, card: HTMLElement) => {
 }
 
 const markLastElementInCard = (card: HTMLElement) => {
-    const lastChild = card.lastElementChild as HTMLElement;
+    const lastChild = cast(card.lastElementChild, HTMLElement);
     if (lastChild.classList.length === 1 && lastChild.classList.contains('card__expander-row')) return;
     lastChild.classList.add("card__last-element");
 }
@@ -191,8 +191,7 @@ const placeExpandButton = (card: HTMLElement) => {
     expand.classList.add("card__expand");
     expand.src = `./images/next.svg`;
     
-    const lastChild = card.lastElementChild as HTMLElement;
-    const preLastChild = lastChild.previousElementSibling as HTMLElement;
+    const lastChild = cast(card.lastElementChild, HTMLElement);
 
     let expandableSibling: HTMLElement;
     if (lastChild.classList.contains('card__basic-info')) {
@@ -201,6 +200,7 @@ const placeExpandButton = (card: HTMLElement) => {
     } else if (lastChild.classList.contains('player') 
     || lastChild.classList.contains('card__image-container')
     || lastChild.classList.contains('card__measurements')) {
+        const preLastChild = cast(lastChild.previousElementSibling, HTMLElement);
         expandableSibling = preLastChild;
         expandableSibling.classList.add("card__expander-row");
     } else {

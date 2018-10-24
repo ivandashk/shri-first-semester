@@ -1,9 +1,9 @@
 const initAllVideos = () => {
     // Инициализация всех видео
-    const videosContainer = document.getElementById('video-page') as HTMLElement;
+    const videosContainer = cast(document.getElementById('video-page'), HTMLElement);
     const videos = videosContainer.children;
     for (let i = 0; i < videos.length; i++) {
-        initVideo(videos[i] as HTMLVideoElement);
+        initVideo(cast(videos[i], HTMLVideoElement));
     }
 };
 

@@ -1,5 +1,5 @@
-const toggleSideBar: HTMLElement | null = document.getElementById("toggle-sidebar");
-const sidebar: HTMLElement | null = document.getElementById("sidebar");
+const toggleSideBar = cast(document.getElementById("toggle-sidebar"), HTMLElement);
+const sidebar = cast(document.getElementById("sidebar"), HTMLElement);
 
 if(!!toggleSideBar && !!sidebar) {
     toggleSideBar.addEventListener("click", () => {
