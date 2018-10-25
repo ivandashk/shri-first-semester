@@ -35,8 +35,8 @@ const assignVideoEventHadlers = (video: HTMLVideoElement) => {
 
 const getAudioContext = (obj: any): obj is { 
     // Получить аудиоконтекст
-    webkitAudioContext: AudioContextConstructor;
-    AudioContext: AudioContextConstructor;
+    webkitAudioContext: AudioContext;
+    AudioContext: AudioContext;
 } => {
     return obj.webkitAudioContext || obj.AudioContext;
 }
