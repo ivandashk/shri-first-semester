@@ -6,7 +6,8 @@ const gulp = require('gulp'),
     sass = require('gulp-sass'),
     sourceMaps = require('gulp-sourcemaps'),
     watch = require('gulp-watch')
-    ts = require('gulp-typescript');
+    ts = require('gulp-typescript')
+    tslint = require("gulp-tslint");
 
 const browserSync = require('browser-sync').create(),
     reload = browserSync.reload
@@ -43,11 +44,15 @@ gulp.task('js', () => {
     return gulp.src([
             './src/blocks/nav/*.ts', 
             './src/blocks/sidebar/*.ts',
-            './src/blocks/card/*.ts',
+            './src/blocks/card/**/*.ts',
             './src/blocks/video-page/*.ts',
             './src/utils/*.ts',
         ])
         .pipe(plumber())
+        .pipe(tslint({
+            formatter: "stylish"
+        }))
+        .pipe(tslint.report())
         .pipe(tsProject())
         .pipe(gulp.dest('./docs/scripts'))
         .pipe(browserSync.stream())
