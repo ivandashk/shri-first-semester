@@ -221,7 +221,7 @@ const appendCameraInterface = (card: HTMLElement) => {
     brightness.innerHTML = "Яркость: 100%";
 };
 
-export default (events: CardEvent[]) => {
+const generateCards = (events: CardEvent[]) => {
     events.forEach((event) => {
         let card = createCard();
         setSize(event.size, card);
@@ -257,3 +257,5 @@ export default (events: CardEvent[]) => {
         }
     });
 };
+
+export default generateCards;
