@@ -2,9 +2,8 @@ import express from "express";
 import path from "path";
 import url from "url";
 import CardEvent from "./card-event";
-
-const { filterEventsByType, filterEventsByPage } = require("./filters");
-const { log } = require("./logger");
+import { filterEventsByPage, filterEventsByType } from "./filters";
+import log from "./logger";
 
 const app = express();
 const port = 8000;
@@ -29,7 +28,7 @@ app.get("/status", (req, res) => {
     const secondsDelta = timeDelta.getSeconds();
 
     res.status(200).send(`${hoursDelta}:${minutesDelta}:${secondsDelta}`);
-    log(req, res.statusCode);
+    log(req, res.statusCode.toString());
 });
 
 app.post("/api/events", (req, res) => {
@@ -39,7 +38,7 @@ app.post("/api/events", (req, res) => {
 
     if (paramsCount.length === 0) {
         res.send(events);
-        log(req, res.statusCode);
+        log(req, res.statusCode.toString());
         return;
     }
 
@@ -48,26 +47,26 @@ app.post("/api/events", (req, res) => {
 
     try {
         if (params.type) {
-            responseEvents = filterEventsByType(responseEvents, params.type);
+            responseEvents = filterEventsByType(responseEvents, params.toString());
         }
         if (params.page) {
-            responseEvents = filterEventsByPage(responseEvents, params.page, params.pageSize);
+            responseEvents = filterEventsByPage(responseEvents, params.page.toString(), params.pageSize.toString());
         }
     } catch (err) {
         res.status(400).json({ error: err.message }).send();
-        log(req, res.statusCode, err.message);
+        log(req, res.statusCode.toString(), err.message);
         return;
     }
 
     res.send({ events: responseEvents });
-    log(req, res.statusCode);
+    log(req, res.statusCode.toString());
 });
 
 app.get("*", (req, res) => {
     res.status(404);
     const message = "Page not found";
     res.send(`<h1>${message}</h1>`);
-    log(req, res.statusCode, message);
+    log(req, res.statusCode.toString(), message);
 });
 
 app.listen(port);
