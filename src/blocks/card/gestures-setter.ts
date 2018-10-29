@@ -106,7 +106,7 @@ export default class GesturesSetter {
         }
     }
 
-    private calculateNewDistance = (event: PointerEvent) => {
+    private calculateNewDistance = (event: PointerEvent): number => {
         const {pointerId, x, y} = event;
         const fixedFinger = pointerId !== this.currentGesture.pointers[0].pointerId
             ? this.currentGesture.pointers[0]

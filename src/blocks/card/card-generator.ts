@@ -3,13 +3,13 @@ import CardDataButtons from "./CardData/CardDataButtons.js";
 import CardDataMeasurements from "./CardData/CardDataMeasurements.js";
 import CardDataMusic from "./CardData/CardDataMusic.js";
 
-const appendDiv = (parent: HTMLElement) => {
+const appendDiv = (parent: HTMLElement): HTMLDivElement => {
     const div = document.createElement("div");
     parent.appendChild(div);
     return div;
 };
 
-const createCard = () => {
+const createCard = (): HTMLDivElement => {
     const ribbon = cast(document.getElementById("ribbon"), HTMLElement);
     const card = appendDiv(ribbon);
     card.classList.add("card");
@@ -50,7 +50,7 @@ const setCardHeader = (event: CardEvent, card: HTMLElement) => {
     header.appendChild(close);
 };
 
-const trimTitle = (str: string, cardSize: string) => {
+const trimTitle = (str: string, cardSize: string): string => {
     let allowedCharWidth = 20;
     switch (cardSize) {
         case "l":
@@ -83,7 +83,7 @@ const setBasicInfo = (event: CardEvent, card: HTMLElement) => {
     time.innerHTML = event.time;
 };
 
-const appendCriticalDetails = (card: HTMLElement) => {
+const appendCriticalDetails = (card: HTMLElement): HTMLDivElement => {
     const details = appendDiv(card);
     details.classList.add("card__details");
     return details;
