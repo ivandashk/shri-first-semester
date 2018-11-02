@@ -4,7 +4,8 @@
         "tslint:recommended"
     ],
     "jsRules": {},
-    "rules": {},
-    "rulesDirectory": [],
-    "radix": false
+    "rules": {
+        "no-var-requires": false
+    },
+    "rulesDirectory": []
 }
