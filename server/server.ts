@@ -1,4 +1,5 @@
 import express from "express";
+import fs from "fs";
 import path from "path";
 import url from "url";
 import CardEvent from "./card-event";
@@ -9,14 +10,45 @@ const app = express();
 const port = 8000;
 
 const publicFolder = "docs";
+const lastVisitedPagePath = "./server/lastVisitedPage.txt";
+let lastVisitedPage: string;
 
 const launchTime = Date.now();
 const minutesInHour = 60;
 
+app.get("/", (req, res) => {
+    if (!lastVisitedPage) {
+        fs.readFile(lastVisitedPagePath, {encoding: "utf-8"}, (err, data) => {
+            if (err) {
+                res.status(500).json({ error: err.message }).send();
+                log(req, res.statusCode.toString(), err.message);
+                return;
+            }
+
+            lastVisitedPage = data;
+            res.status(200).sendFile(path.join(__dirname, "..", publicFolder, lastVisitedPage));
+        });
+    } else {
+        res.status(200).sendFile(path.join(__dirname, "..", publicFolder, lastVisitedPage));
+    }
+});
+
 app.use(express.static(publicFolder));
 
-app.get("/", (req, res) => {
-    res.status(200).sendFile(path.join(__dirname, publicFolder, "index.html"));
+app.post("/savePage", (req, res) => {
+    // Body parse
+    const newPageValue = "video.html";
+    fs.writeFile(lastVisitedPagePath, newPageValue, (err) => {
+        if (err) {
+            res.status(500).json({ error: err.message }).send();
+            log(req, res.statusCode.toString(), err.message);
+            return;
+        }
+
+        lastVisitedPage = newPageValue;
+        res.status(200).sendFile(path.join(__dirname, "..", publicFolder, newPageValue));
+        log(req, res.statusCode.toString());
+    });
 });
 
 app.get("/status", (req, res) => {
