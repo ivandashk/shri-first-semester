@@ -5,10 +5,13 @@ const gulp = require('gulp'),
     plumber = require('gulp-plumber'),
     sass = require('gulp-sass'),
     sourceMaps = require('gulp-sourcemaps'),
-    watch = require('gulp-watch');
+    watch = require('gulp-watch')
+    ts = require('gulp-typescript')
+    tslint = require("gulp-tslint");
 
 const browserSync = require('browser-sync').create(),
-    reload = browserSync.reload;
+    reload = browserSync.reload
+    tsProject = ts.createProject('tsconfig.json');
 
 gulp.task('html', () => {
     return gulp.src('./src/index.pug')
@@ -38,8 +41,19 @@ gulp.task('css', () => {
 })
 
 gulp.task('js', () => {
-    return gulp.src(['./src/blocks/card/*.js', './src/blocks/nav/*.js', './src/blocks/sidebar/*.js', './src/blocks/video-page/*.js'])
+    return gulp.src([
+            './src/blocks/nav/*.ts', 
+            './src/blocks/sidebar/*.ts',
+            './src/blocks/card/**/*.ts',
+            './src/blocks/video-page/*.ts',
+            './src/utils/*.ts',
+        ])
         .pipe(plumber())
+        .pipe(tslint({
+            formatter: "stylish"
+        }))
+        .pipe(tslint.report())
+        .pipe(tsProject())
         .pipe(gulp.dest('./docs/scripts'))
         .pipe(browserSync.stream())
 })
@@ -62,8 +76,7 @@ gulp.task('serve', () => {
     });
     watch('./src/**/*.pug', gulp.series('html', 'html-video-page', reload));
     watch('./src/**/*.scss', {readDelay: 100}, gulp.series('css'));
-    watch('./src/**/*.js', gulp.series('js', reload));
-    watch('./src/images/').on('add', gulp.series('images', reload));
+    watch('./src/**/*.+(js|ts)', gulp.series('js', reload));
 })
 
 gulp.task('default', gulp.series('build', 'serve'));
