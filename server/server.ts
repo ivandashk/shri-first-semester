@@ -69,4 +69,7 @@ app.get("*", (req, res) => {
     log(req, res.statusCode.toString(), message);
 });
 
-app.listen(port);
+app.listen(port, () => {
+    // tslint:disable-next-line:no-console
+    console.log(`App listening at http://localhost:${port}`);
+});
