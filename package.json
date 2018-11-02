@@ -2,6 +2,7 @@
   "name": "shri-first-semester",
   "version": "1.0.0",
   "scripts": {
+    "build": "gulp build",
     "start": "ts-node server/server.ts"
   },
   "devDependencies": {
