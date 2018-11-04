@@ -12,9 +12,10 @@ class MyLittleDispatcher {
     private lastId: number = 1;
     private callbacks: ICallbacks = {};
 
-    public register = (callback: (action: IAction) => void) => {
-        const id = (this.lastId++).toString();
-        this.callbacks[id] = callback;
+    public register = (callback: (action: IAction) => void): number => {
+        const id = this.lastId++;
+        this.callbacks[id.toString()] = callback;
+        return id;
     }
 
     protected dispatch = (payload: IAction) => {
