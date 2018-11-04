@@ -16,6 +16,8 @@ let lastVisitedPage: string;
 const launchTime = Date.now();
 const minutesInHour = 60;
 
+app.use(express.json());
+
 app.get("/", (req, res) => {
     if (!lastVisitedPage) {
         fs.readFile(lastVisitedPagePath, {encoding: "utf-8"}, (err, data) => {
@@ -35,9 +37,13 @@ app.get("/", (req, res) => {
 
 app.use(express.static(publicFolder));
 
+app.get("/getPage", (req, res) => {
+    res.send({ lastVisited: lastVisitedPage });
+    log(req, res.statusCode.toString());
+});
+
 app.post("/savePage", (req, res) => {
-    // Body parse
-    const newPageValue = "video.html";
+    const newPageValue = req.body.pageName;
     fs.writeFile(lastVisitedPagePath, newPageValue, (err) => {
         if (err) {
             res.status(500).json({ error: err.message }).send();
@@ -46,7 +52,7 @@ app.post("/savePage", (req, res) => {
         }
 
         lastVisitedPage = newPageValue;
-        res.status(200).sendFile(path.join(__dirname, "..", publicFolder, newPageValue));
+        res.status(200);
         log(req, res.statusCode.toString());
     });
 });
