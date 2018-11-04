@@ -1,11 +1,10 @@
 import Actions from "./flux/Actions.js";
-import Store from "./flux/Store.js";
+import pageStore from "./flux/PageStore.js";
 
 const initHeader = () => {
     const indexPageLink = cast(document.getElementById("index-link"), HTMLElement);
     const videoPageLink = cast(document.getElementById("video-link"), HTMLElement);
-    const store = Store;
-    store.addChangeListener(showNoRerenderMessage);
+    pageStore.addChangeListener(showNoRerenderMessage);
 
     indexPageLink.addEventListener("click", () => {
         Actions.changePage("index.html");

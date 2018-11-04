@@ -1,7 +1,7 @@
 import Dispatcher from "./Dispatcher.js";
 import { IAction, MyLittleStore } from "./MyLittleFramework.js";
 
-class SomeStore extends MyLittleStore {
+class PageStore extends MyLittleStore {
     private pageName: string = "";
 
     constructor() {
@@ -56,6 +56,6 @@ const savePageQuery = (page: string) => {
         });
 };
 
-const someStore = new SomeStore();
+const pageStore = new PageStore();
 
-export default someStore;
+export default pageStore;
