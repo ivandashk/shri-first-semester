@@ -1,4 +1,5 @@
 import express from "express";
+import fs from "fs";
 import path from "path";
 import url from "url";
 import CardEvent from "./card-event";
@@ -9,14 +10,51 @@ const app = express();
 const port = 8000;
 
 const publicFolder = "docs";
+const lastVisitedPagePath = "./server/lastVisitedPage.txt";
+let lastVisitedPage: string;
 
 const launchTime = Date.now();
 const minutesInHour = 60;
 
-app.use(express.static(publicFolder));
+app.use(express.json());
 
 app.get("/", (req, res) => {
-    res.status(200).sendFile(path.join(__dirname, publicFolder, "index.html"));
+    if (!lastVisitedPage) {
+        fs.readFile(lastVisitedPagePath, {encoding: "utf-8"}, (err, data) => {
+            if (err) {
+                res.status(500).json({ error: err.message }).send();
+                log(req, res.statusCode.toString(), err.message);
+                return;
+            }
+
+            lastVisitedPage = data;
+            res.status(200).sendFile(path.join(__dirname, "..", publicFolder, lastVisitedPage));
+        });
+    } else {
+        res.status(200).sendFile(path.join(__dirname, "..", publicFolder, lastVisitedPage));
+    }
+});
+
+app.use(express.static(publicFolder));
+
+app.get("/getPage", (req, res) => {
+    res.send({ lastVisited: lastVisitedPage });
+    log(req, res.statusCode.toString());
+});
+
+app.post("/savePage", (req, res) => {
+    const newPageValue = req.body.pageName;
+    fs.writeFile(lastVisitedPagePath, newPageValue, (err) => {
+        if (err) {
+            res.status(500).json({ error: err.message }).send();
+            log(req, res.statusCode.toString(), err.message);
+            return;
+        }
+
+        lastVisitedPage = newPageValue;
+        res.status(200);
+        log(req, res.statusCode.toString());
+    });
 });
 
 app.get("/status", (req, res) => {
